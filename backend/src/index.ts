@@ -1,0 +1,51 @@
+import express, { Express, Request, Response } from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import authRoutes from './routes/authRoutes.js';
+import eventRoutes from './routes/eventRoutes.js';
+import donationRoutes from './routes/donationRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
+import catalogRoutes from './routes/catalogRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import withdrawalRoutes from './routes/withdrawalRoutes.js';
+import publicRoutes from './routes/publicRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
+
+const app: Express = express();
+const port = process.env.PORT || 8000;
+
+app.use(cors());
+app.use(express.json());
+
+// Static files
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/events', eventRoutes);
+app.use('/api/donations', donationRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/catalog', catalogRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/withdrawals', withdrawalRoutes);
+app.use('/api/public', publicRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/reports', reportRoutes);
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('Momentri Backend API is running!');
+});
+
+app.listen(port, () => {
+  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+});

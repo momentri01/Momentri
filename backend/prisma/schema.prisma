@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id               String       @id @default(uuid())
+  email            String       @unique
+  fullName         String
+  passwordHash     String
+  role             String       @default("USER")
+  deliveryAddress  String?
+  payoutInfo       String?
+  events           Event[]
+  withdrawals      Withdrawal[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Event {
+  id                   String             @id @default(uuid())
+  ownerId              String
+  owner                User               @relation(fields: [ownerId], references: [id])
+  eventType            String
+  title                String
+  description          String
+  eventDate            DateTime
+  coverImageUrl        String?
+  donationGoal         Float
+  currency             String             @default("USD")
+  thankYouMessage      String?
+  totalDonationsGross  Float @default(0)
+  totalPlatformFees    Float @default(0)
+  totalDonationsNet    Float @default(0)
+  totalWishlistValue   Float @default(0)
+  withdrawnAmount      Float @default(0)
+  status               String             @default("ACTIVE")
+  verificationStatus   String             @default("NONE") // NONE, PENDING, VERIFIED, REJECTED
+  isVerified           Boolean            @default(false)
+  visibility           String             @default("PUBLIC")
+  country              String
+  slug                 String             @unique
+  donations            Donation[]
+  wishlistItems        WishlistItem[]
+  wishlistPurchases    WishlistPurchase[]
+  withdrawals          Withdrawal[]
+  reports              Report[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model Donation {
+  id                   String        @id @default(uuid())
+  eventId              String
+  event                Event         @relation(fields: [eventId], references: [id])
+  donorName            String
+  donorEmail           String
+  isAnonymous          Boolean       @default(false)
+  grossAmount          Float
+  platformFee          Float
+  netAmount            Float
+  currency             String
+  paymentMethod        String
+  paymentStatus        String        @default("PENDING")
+  transactionReference String?       @unique
+  message              String?
+  createdAt            DateTime      @default(now())
+}
+
+model CatalogItem {
+  id            String         @id @default(uuid())
+  name          String
+  description   String
+  category      String
+  price             Float
+  currency      String         @default("USD")
+  imageUrl      String?
+  imageUrls     String         @default("[]")
+  isActive      Boolean        @default(true)
+  wishlistItems WishlistItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model WishlistItem {
+  id                String             @id @default(uuid())
+  eventId              String
+  event                Event              @relation(fields: [eventId], references: [id])
+  catalogItemId     String
+  catalogItem       CatalogItem        @relation(fields: [catalogItemId], references: [id])
+  itemName          String
+  itemDescription   String
+  itemImageUrl      String?
+  price             Float
+  currency          String
+  quantityRequested Int
+  quantityPurchased Int                @default(0)
+  status            String             @default("ACTIVE")
+  purchases         WishlistPurchase[]
+  createdAt         DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model WishlistPurchase {
+  id                   String            @id @default(uuid())
+  eventId              String
+  event                Event             @relation(fields: [eventId], references: [id])
+  wishlistItemId       String
+  wishlistItem         WishlistItem      @relation(fields: [wishlistItemId], references: [id])
+  itemName             String
+  buyerName            String
+  buyerEmail           String
+  isAnonymous          Boolean           @default(false)
+  quantity             Int
+  grossAmount          Float
+  platformFee          Float
+  netAmount            Float
+  currency             String
+  paymentMethod        String
+  paymentStatus        String            @default("PENDING")
+  fulfillmentStatus    String            @default("PENDING")
+  transactionReference String?           @unique
+  message              String?
+  createdAt            DateTime          @default(now())
+}
+
+model Withdrawal {
+  id            String           @id @default(uuid())
+  userId        String
+  user          User             @relation(fields: [userId], references: [id])
+  userEmail     String
+  eventId       String
+  event         Event            @relation(fields: [eventId], references: [id])
+  eventTitle    String
+  amount        Float
+  currency      String
+  payoutMethod  String
+  payoutDetails String?
+  status        String           @default("PENDING")
+  adminNotes    String?
+  processedAt   DateTime?
+  createdAt     DateTime         @default(now())
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id])
+  reporterEmail String
+  reason      String
+  details     String?
+  status      String   @default("PENDING") // PENDING, REVIEWED, RESOLVED
+  createdAt   DateTime @default(now())
+}
