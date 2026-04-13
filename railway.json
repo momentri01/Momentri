@@ -3,10 +3,6 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "backend/Dockerfile",
-    "context": "backend"
-  },
-  "deploy": {
-    "startCommand": "npm run start",
-    "rootDirectory": "backend"
+    "context": "."
   }
 }

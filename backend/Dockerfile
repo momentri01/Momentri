@@ -4,14 +4,14 @@ FROM node:20-slim AS builder
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (prefixed with backend/)
+COPY backend/package*.json ./
 
-# Install all dependencies (including devDependencies for tsc)
+# Install all dependencies
 RUN npm install
 
 # Copy source and prisma
-COPY . .
+COPY backend/ .
 
 # Generate Prisma client and build
 RUN npx prisma generate
@@ -22,7 +22,7 @@ FROM node:20-slim
 
 WORKDIR /app
 
-# Install openssl for Prisma (needed on slim images)
+# Install openssl for Prisma
 RUN apt-get update -y && apt-get install -y openssl
 
 # Copy package.json
