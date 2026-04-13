@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Calendar, Target, Globe, Lock, ArrowLeft, ArrowRight, CheckCircle2, Gift, Plus, Minus, Search, MapPin, ShieldCheck, X, Image as ImageIcon, Upload, Loader2, ChevronRight } from 'lucide-react';
+import { Calendar, Target, Globe, Lock, ArrowLeft, ArrowRight, CheckCircle2, Gift, Plus, Minus, Search, MapPin, ShieldCheck, X, Image as ImageIcon, Upload, Loader2, ChevronRight, Package } from 'lucide-react';
 
 interface CatalogItem {
   id: string;
@@ -78,7 +78,8 @@ const CreateEvent: React.FC = () => {
     uploadData.append('image', file);
 
     try {
-      const response = await fetch('http://localhost:8001/api/upload', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+      const response = await fetch(`${apiUrl}/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`

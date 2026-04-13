@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { api } from '../lib/api';
-import { LayoutDashboard, Users, Gift, CreditCard, ExternalLink, Settings as SettingsIcon, ChevronRight, X, Smartphone, Landmark, CheckCircle2 } from 'lucide-react';
+import { LayoutDashboard, Users, Gift, CreditCard, ExternalLink, Settings as SettingsIcon, ChevronRight, X, Smartphone, Landmark, CheckCircle2, AlertCircle } from 'lucide-react';
 
 const ManageEvent: React.FC = () => {
   const [searchParams] = useSearchParams();
