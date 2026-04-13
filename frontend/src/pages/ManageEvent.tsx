@@ -9,30 +9,28 @@ const ManageEvent: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [event, setEvent] = useState<any>(null);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [stripeLoading, setStripeLoading] = useState(false);
   
   const [withdrawForm, setWithdrawForm] = useState({
     amount: '',
-    payoutMethod: 'Bank Transfer',
-    details: {
-      accountNumber: '',
-      accountName: '',
-      bankName: '',
-      mobileNumber: '',
-      provider: 'MTN'
-    }
+    payoutMethod: 'Stripe Connect',
+    details: {}
   });
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const [eventData, withdrawalData] = await Promise.all([
+        const [eventData, withdrawalData, profileData] = await Promise.all([
           api.get(`/events/${eventId}`),
-          api.get('/withdrawals/my')
+          api.get('/withdrawals/my'),
+          api.get('/users/profile')
         ]);
         setEvent(eventData);
         setWithdrawals(withdrawalData.filter((w: any) => w.eventId === eventId));
+        setProfile(profileData);
       } catch (error) {
         console.error('Failed to fetch event');
       } finally {
@@ -42,16 +40,34 @@ const ManageEvent: React.FC = () => {
     if (eventId) fetchEventDetails();
   }, [eventId]);
 
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const response = await api.post('/users/stripe/connect', {});
+      if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      alert('Failed to connect with Stripe');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
+
   const handleRequestWithdrawal = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!profile?.stripeOnboardingComplete) {
+        alert('Please complete Stripe onboarding first.');
+        return;
+    }
     try {
       await api.post('/withdrawals', {
         eventId,
         amount: parseFloat(withdrawForm.amount),
-        payoutMethod: withdrawForm.payoutMethod,
-        payoutDetails: withdrawForm.details
+        payoutMethod: 'Stripe',
+        payoutDetails: { stripeAccountId: profile.stripeAccountId }
       });
-      alert('Withdrawal request submitted successfully!');
+      alert('Withdrawal request submitted successfully! An admin will process it shortly.');
       setShowWithdrawModal(false);
       window.location.reload();
     } catch (error: any) {
@@ -307,89 +323,52 @@ const ManageEvent: React.FC = () => {
                </div>
 
                <form onSubmit={handleRequestWithdrawal} className="space-y-6">
-                  <div>
-                     <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Amount to Withdraw</label>
-                     <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">{event.currency}</span>
-                        <input
-                           type="number"
-                           required
-                           max={Number(event.totalDonationsNet) - Number(event.withdrawnAmount || 0)}
-                           className="w-full rounded-2xl border-border bg-muted/20 pl-12 pr-4 py-4 text-2xl font-black"
-                           placeholder="0.00"
-                           value={withdrawForm.amount}
-                           onChange={(e) => setWithdrawForm({...withdrawForm, amount: e.target.value})}
-                        />
-                     </div>
-                     <p className="text-[10px] text-muted-foreground mt-2 font-bold">Max available: {event.currency} {(Number(event.totalDonationsNet) - Number(event.withdrawnAmount || 0)).toFixed(2)}</p>
-                  </div>
-
-                  <div>
-                     <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-3">Payout Method</label>
-                     <div className="grid grid-cols-2 gap-3">
+                  {!profile?.stripeOnboardingComplete ? (
+                     <div className="bg-amber-50 p-6 rounded-2xl border border-amber-100 text-center">
+                        <AlertCircle className="text-amber-600 mx-auto mb-3" size={32} />
+                        <p className="font-bold text-amber-800 text-sm mb-2">Stripe Onboarding Required</p>
+                        <p className="text-xs text-amber-700 font-medium mb-6">To receive payouts, you must first connect your account with Stripe.</p>
                         <button 
-                           type="button" 
-                           onClick={() => setWithdrawForm({...withdrawForm, payoutMethod: 'Bank Transfer'})}
-                           className={`p-4 rounded-2xl border flex items-center gap-3 transition-all ${withdrawForm.payoutMethod === 'Bank Transfer' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'hover:border-primary/50'}`}
+                           type="button"
+                           onClick={handleStripeConnect}
+                           disabled={stripeLoading}
+                           className="w-full inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg hover:bg-primary/90 transition-all active:scale-95"
                         >
-                           <Landmark size={18} className={withdrawForm.payoutMethod === 'Bank Transfer' ? 'text-primary' : 'text-muted-foreground'} />
-                           <span className="text-xs font-bold">Bank</span>
+                           {stripeLoading ? 'Connecting...' : 'Set Up Payouts with Stripe'}
                         </button>
-                        <button 
-                           type="button" 
-                           onClick={() => setWithdrawForm({...withdrawForm, payoutMethod: 'Mobile Money'})}
-                           className={`p-4 rounded-2xl border flex items-center gap-3 transition-all ${withdrawForm.payoutMethod === 'Mobile Money' ? 'border-primary bg-primary/5 ring-1 ring-primary' : 'hover:border-primary/50'}`}
-                        >
-                           <Smartphone size={18} className={withdrawForm.payoutMethod === 'Mobile Money' ? 'text-primary' : 'text-muted-foreground'} />
-                           <span className="text-xs font-bold">MoMo</span>
-                        </button>
-                     </div>
-                  </div>
-
-                  {withdrawForm.payoutMethod === 'Bank Transfer' ? (
-                     <div className="space-y-3">
-                        <input 
-                           placeholder="Bank Name" required 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, bankName: e.target.value}})}
-                        />
-                        <input 
-                           placeholder="Account Number" required 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, accountNumber: e.target.value}})}
-                        />
-                        <input 
-                           placeholder="Account Holder Name" required 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, accountName: e.target.value}})}
-                        />
                      </div>
                   ) : (
-                     <div className="space-y-3">
-                        <select 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, provider: e.target.value}})}
-                        >
-                           <option>MTN MoMo</option>
-                           <option>Telecel Cash</option>
-                           <option>AirtelTigo Money</option>
-                        </select>
-                        <input 
-                           placeholder="Mobile Number" required 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, mobileNumber: e.target.value}})}
-                        />
-                        <input 
-                           placeholder="Registered Name" required 
-                           className="w-full rounded-xl border border-border bg-muted/10 px-4 py-3 text-sm font-medium"
-                           onChange={(e) => setWithdrawForm({...withdrawForm, details: {...withdrawForm.details, accountName: e.target.value}})}
-                        />
-                     </div>
-                  )}
+                     <>
+                        <div className="bg-green-50 p-4 rounded-xl border border-green-100 flex items-center gap-3 mb-6">
+                           <CheckCircle2 className="text-green-600" size={20} />
+                           <div className="flex-1">
+                              <p className="text-[10px] font-black uppercase text-green-700 tracking-widest">Payouts Active</p>
+                              <p className="text-xs font-bold text-green-800">Funds will be sent to your connected Stripe account.</p>
+                           </div>
+                        </div>
 
-                  <button className="w-full inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-lg font-black text-primary-foreground shadow-lg hover:bg-primary/90 transition-all">
-                     Submit Request
-                  </button>
+                        <div>
+                           <label className="block text-xs font-black uppercase tracking-widest text-muted-foreground mb-2">Amount to Withdraw</label>
+                           <div className="relative">
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-400">{event.currency}</span>
+                              <input
+                                 type="number"
+                                 required
+                                 max={Number(event.totalDonationsNet) - Number(event.withdrawnAmount || 0)}
+                                 className="w-full rounded-2xl border-border bg-muted/20 pl-12 pr-4 py-4 text-2xl font-black"
+                                 placeholder="0.00"
+                                 value={withdrawForm.amount}
+                                 onChange={(e) => setWithdrawForm({...withdrawForm, amount: e.target.value})}
+                              />
+                           </div>
+                           <p className="text-[10px] text-muted-foreground mt-2 font-bold">Max available: {event.currency} {(Number(event.totalDonationsNet) - Number(event.withdrawnAmount || 0)).toFixed(2)}</p>
+                        </div>
+
+                        <button className="w-full inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-lg font-black text-primary-foreground shadow-lg hover:bg-primary/90 transition-all active:scale-95">
+                           Submit Request
+                        </button>
+                     </>
+                  )}
                </form>
             </div>
          </div>

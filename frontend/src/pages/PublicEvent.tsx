@@ -64,21 +64,35 @@ const PublicEvent: React.FC = () => {
       }
     };
     fetchEvent();
+
+    // Handle query params for success/cancel
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('donation_success')) {
+      alert('Thank you for your donation! Your payment was successful.');
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    if (params.get('purchase_success')) {
+      alert('Thank you for your purchase! Your payment was successful.');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, [slug]);
 
   const handleDonate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const donation = await api.post('/donations', {
+      const response = await api.post('/donations', {
         ...donationForm,
         eventId: event?.id,
         grossAmount: parseFloat(donationForm.grossAmount),
         currency: event?.currency,
       });
-      await api.post(`/donations/${donation.id}/success`, {});
-      alert('Thank you for your donation!');
-      setShowDonationModal(false);
-      window.location.reload();
+      
+      if (response.url) {
+        window.location.href = response.url;
+      } else {
+        throw new Error('Could not create checkout session');
+      }
     } catch (error: any) {
       alert(error.message || 'Donation failed');
     }
@@ -87,14 +101,17 @@ const PublicEvent: React.FC = () => {
   const handlePurchase = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const purchase = await api.post('/wishlist/purchase', {
+      const response = await api.post('/wishlist/purchase', {
         ...purchaseForm,
         wishlistItemId: selectedItem.id,
+        quantity: purchaseForm.quantity,
       });
-      await api.post(`/wishlist/purchase/${purchase.id}/success`, {});
-      alert(`Thank you for purchasing ${selectedItem.itemName}!`);
-      setShowPurchaseModal(false);
-      window.location.reload();
+      
+      if (response.url) {
+        window.location.href = response.url;
+      } else {
+        throw new Error('Could not create checkout session');
+      }
     } catch (error) {
       alert('Purchase failed');
     }

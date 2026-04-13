@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import prisma from '../utils/prisma.js';
 import { PaymentStatus } from '../types/prisma.js';
+import { stripe, FRONTEND_URL } from '../utils/stripe.js';
 
 export const createDonation = async (req: Request, res: Response) => {
   const { eventId, donorName, donorEmail, isAnonymous, grossAmount, currency, message } = req.body;
@@ -27,17 +28,44 @@ export const createDonation = async (req: Request, res: Response) => {
         grossAmount,
         platformFee,
         netAmount,
-        currency,
-        paymentMethod: 'STRIPE', // Default for now
+        currency: currency || 'USD',
+        paymentMethod: 'STRIPE',
         paymentStatus: PaymentStatus.PENDING,
         message,
       },
     });
 
-    // In a real app, you'd create a Stripe PaymentIntent here
-    res.status(201).json(donation);
+    // Create Stripe Checkout Session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: currency?.toLowerCase() || 'usd',
+            product_data: {
+              name: `Donation to ${event.title}`,
+              description: `Support ${event.ownerId}'s fundraiser`,
+            },
+            unit_amount: Math.round(Number(grossAmount) * 100), // Stripe expects cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+      customer_email: donorEmail,
+      success_url: `${FRONTEND_URL}/events/${event.slug}?donation_success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${FRONTEND_URL}/events/${event.slug}?donation_cancel=true`,
+      metadata: {
+        donationId: donation.id,
+        eventId: event.id,
+        type: 'donation',
+      },
+    });
+
+    res.status(201).json({ url: session.url, donationId: donation.id });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating donation', error });
+    console.error('Stripe Donation Error:', error);
+    res.status(500).json({ message: 'Error creating donation checkout session', error });
   }
 };
 

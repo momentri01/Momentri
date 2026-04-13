@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
+import { stripe } from '../utils/stripe.js';
 
 export const getAdminStats = async (req: AuthRequest, res: Response) => {
   try {
@@ -77,8 +78,34 @@ export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) =>
   const { id } = req.params;
   const { status, adminNotes } = req.body;
   try {
-    const withdrawal = await prisma.withdrawal.findUnique({ where: { id: id as string } });
+    const withdrawal = await prisma.withdrawal.findUnique({ 
+        where: { id: id as string },
+        include: { user: true }
+    });
     if (!withdrawal) return res.status(404).json({ message: 'Withdrawal not found' });
+
+    // If processing, perform Stripe transfer
+    if (status === 'PROCESSED' && withdrawal.status !== 'PROCESSED') {
+        if (!withdrawal.user.stripeAccountId || !withdrawal.user.stripeOnboardingComplete) {
+            return res.status(400).json({ message: 'User has not completed Stripe onboarding' });
+        }
+
+        try {
+            await stripe.transfers.create({
+                amount: Math.round(withdrawal.amount * 100),
+                currency: withdrawal.currency.toLowerCase(),
+                destination: withdrawal.user.stripeAccountId,
+                description: `Withdrawal for event: ${withdrawal.eventTitle}`,
+                metadata: {
+                    withdrawalId: withdrawal.id,
+                    eventId: withdrawal.eventId
+                }
+            });
+        } catch (stripeError: any) {
+            console.error('Stripe Transfer Error:', stripeError);
+            return res.status(500).json({ message: 'Stripe transfer failed', error: stripeError.message });
+        }
+    }
 
     const updatedWithdrawal = await prisma.withdrawal.update({
       where: { id: id as string },

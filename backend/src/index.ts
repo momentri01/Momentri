@@ -12,6 +12,7 @@ import withdrawalRoutes from './routes/withdrawalRoutes.js';
 import publicRoutes from './routes/publicRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
+import { handleStripeWebhook } from './controllers/stripeWebhookController.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -24,6 +25,10 @@ const app: Express = express();
 const port = process.env.PORT || 8000;
 
 app.use(cors());
+
+// Webhook must be before express.json()
+app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), handleStripeWebhook);
+
 app.use(express.json());
 
 // Static files

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Plus, Calendar, Target, Users, Settings, Eye } from 'lucide-react';
+import { Plus, Calendar, Target, Users, Settings, Eye, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface Event {
   id: string;
@@ -14,23 +14,55 @@ interface Event {
   slug: string;
 }
 
+interface UserProfile {
+  stripeOnboardingComplete: boolean;
+  stripeAccountId: string | null;
+}
+
 const Dashboard: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchData = async () => {
       try {
-        const data = await api.get('/events/my');
-        setEvents(data);
+        const [eventsData, profileData] = await Promise.all([
+          api.get('/events/my'),
+          api.get('/users/profile')
+        ]);
+        setEvents(eventsData);
+        setProfile(profileData);
       } catch (error) {
-        console.error('Failed to fetch events', error);
+        console.error('Failed to fetch data', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
+    fetchData();
+
+    // Handle query params for stripe onboarding
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('stripe_onboarding_success')) {
+      alert('Stripe onboarding completed! You can now receive payouts.');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
   }, []);
+
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const response = await api.post('/users/stripe/connect', {});
+      if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      alert('Failed to connect with Stripe');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
 
   const totalRaised = events.reduce((acc, event) => acc + Number(event.totalDonationsNet), 0);
 
@@ -41,17 +73,19 @@ const Dashboard: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900">My Dashboard</h1>
           <p className="text-muted-foreground">Manage your events and track your progress.</p>
         </div>
-        <Link
-          to="/create-event"
-          className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Create New Event
-        </Link>
+        <div className="flex gap-4">
+            <Link
+            to="/create-event"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90"
+            >
+            <Plus className="mr-2 h-4 w-4" />
+            Create New Event
+            </Link>
+        </div>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <div className="bg-white p-6 rounded-2xl border shadow-sm">
           <p className="text-sm font-medium text-muted-foreground mb-1">Total Net Raised</p>
           <p className="text-2xl font-bold text-primary">${totalRaised.toFixed(2)}</p>
@@ -64,9 +98,38 @@ const Dashboard: React.FC = () => {
           <p className="text-sm font-medium text-muted-foreground mb-1">Successful Campaigns</p>
           <p className="text-2xl font-bold">{events.filter(e => Number(e.totalDonationsNet) >= Number(e.donationGoal)).length}</p>
         </div>
+        
+        {/* Payout Status Card */}
+        <div className="bg-white p-6 rounded-2xl border shadow-sm flex flex-col justify-between">
+           <div>
+              <p className="text-sm font-medium text-muted-foreground mb-1">Payout Status</p>
+              {profile?.stripeOnboardingComplete ? (
+                 <div className="flex items-center gap-2 text-green-600 font-bold">
+                    <CheckCircle2 size={16} />
+                    <span>Active</span>
+                 </div>
+              ) : (
+                 <div className="flex items-center gap-2 text-amber-600 font-bold">
+                    <AlertCircle size={16} />
+                    <span>Action Required</span>
+                 </div>
+              )}
+           </div>
+           {!profile?.stripeOnboardingComplete && (
+              <button 
+                 onClick={handleStripeConnect}
+                 disabled={stripeLoading}
+                 className="mt-2 text-xs font-bold text-primary hover:underline flex items-center gap-1"
+              >
+                 {stripeLoading ? 'Connecting...' : 'Set Up Payouts'}
+              </button>
+           )}
+        </div>
       </div>
 
-      <h2 className="text-xl font-bold mb-6">Your Events</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold">Your Events</h2>
+      </div>
 
       {loading ? (
         <div className="flex justify-center py-12">

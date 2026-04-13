@@ -1,13 +1,23 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
+import { stripe, FRONTEND_URL } from '../utils/stripe.js';
 
 export const getProfile = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.userId;
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { id: true, email: true, fullName: true, role: true, deliveryAddress: true, payoutInfo: true }
+      select: { 
+        id: true, 
+        email: true, 
+        fullName: true, 
+        role: true, 
+        deliveryAddress: true, 
+        payoutInfo: true,
+        stripeAccountId: true,
+        stripeOnboardingComplete: true
+      }
     });
     res.json(user);
   } catch (error) {
@@ -22,10 +32,83 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     const user = await prisma.user.update({
       where: { id: userId },
       data: { fullName, deliveryAddress, payoutInfo },
-      select: { id: true, email: true, fullName: true, role: true, deliveryAddress: true, payoutInfo: true }
+      select: { 
+        id: true, 
+        email: true, 
+        fullName: true, 
+        role: true, 
+        deliveryAddress: true, 
+        payoutInfo: true,
+        stripeAccountId: true,
+        stripeOnboardingComplete: true
+      }
     });
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: 'Error updating profile', error });
+  }
+};
+
+export const createStripeAccount = async (req: AuthRequest, res: Response) => {
+  const userId = req.user?.userId;
+  const email = req.user?.email;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    let stripeAccountId = user.stripeAccountId;
+
+    if (!stripeAccountId) {
+      const account = await stripe.accounts.create({
+        type: 'express',
+        email: email,
+        capabilities: {
+          transfers: { requested: true },
+        },
+      });
+      stripeAccountId = account.id;
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: { stripeAccountId }
+      });
+    }
+
+    const accountLink = await stripe.accountLinks.create({
+      account: stripeAccountId,
+      refresh_url: `${FRONTEND_URL}/dashboard?stripe_onboarding_refresh=true`,
+      return_url: `${FRONTEND_URL}/dashboard?stripe_onboarding_success=true`,
+      type: 'account_onboarding',
+    });
+
+    res.json({ url: accountLink.url });
+  } catch (error) {
+    console.error('Stripe Connect Error:', error);
+    res.status(500).json({ message: 'Error creating Stripe account link', error });
+  }
+};
+
+export const checkStripeStatus = async (req: AuthRequest, res: Response) => {
+  const userId = req.user?.userId;
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.stripeAccountId) {
+      return res.json({ onboardingComplete: false });
+    }
+
+    const account = await stripe.accounts.retrieve(user.stripeAccountId);
+    const onboardingComplete = account.details_submitted;
+
+    if (onboardingComplete && !user.stripeOnboardingComplete) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { stripeOnboardingComplete: true }
+      });
+    }
+
+    res.json({ onboardingComplete });
+  } catch (error) {
+    res.status(500).json({ message: 'Error checking Stripe status', error });
   }
 };
