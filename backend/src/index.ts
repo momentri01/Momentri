@@ -24,7 +24,10 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 8000;
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true
+}));
 
 // Webhook must be before express.json()
 app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), handleStripeWebhook);
