@@ -332,10 +332,9 @@ const CreateEvent: React.FC = () => {
                     onChange={handleChange}
                   >
                     <option>USD</option>
-                    <option>GHS</option>
-                    <option>NGN</option>
-                    <option>KES</option>
+                    <option>CAD</option>
                   </select>
+
                 </div>
               </div>
               <div>
