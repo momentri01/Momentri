@@ -21,6 +21,11 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
+console.log("ENV CHECK:", {
+  DATABASE_URL: process.env.DATABASE_URL ? "SET" : "UNDEFINED",
+  JWT_SECRET: process.env.JWT_SECRET ? "SET" : "UNDEFINED",
+});
+
 const app: Express = express();
 const port = process.env.PORT || 8000;
 

@@ -30,8 +30,9 @@ export const register = async (req: Request, res: Response) => {
     );
 
     res.status(201).json({ token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong', error });
+  } catch (error: any) {
+    console.error("REGISTER ERROR:", error);
+    res.status(500).json({ message: 'Something went wrong', error: error.message });
   }
 };
 
