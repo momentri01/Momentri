@@ -90,20 +90,24 @@ export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) =>
             return res.status(400).json({ message: 'User has not completed Stripe onboarding' });
         }
 
+        if (withdrawal.amount <= 0) {
+            return res.status(400).json({ message: 'Withdrawal amount must be greater than 0' });
+        }
+
         try {
-            await stripe.transfers.create({
+            console.log(`Initiating Stripe transfer of ${withdrawal.amount} to account ${withdrawal.user.stripeAccountId}`);
+            
+            const transfer = await stripe.transfers.create({
                 amount: Math.round(withdrawal.amount * 100),
                 currency: withdrawal.currency.toLowerCase(),
                 destination: withdrawal.user.stripeAccountId,
-                description: `Withdrawal for event: ${withdrawal.eventTitle}`,
-                metadata: {
-                    withdrawalId: withdrawal.id,
-                    eventId: withdrawal.eventId
-                }
+                transfer_group: `withdrawal_${withdrawal.id}`,
             });
+            
+            console.log('Stripe transfer successful:', transfer.id);
         } catch (stripeError: any) {
-            console.error('Stripe Transfer Error:', stripeError);
-            return res.status(500).json({ message: 'Stripe transfer failed', error: stripeError.message });
+            console.error('Stripe Transfer Error Details:', stripeError.raw ? stripeError.raw.message : stripeError.message);
+            return res.status(500).json({ message: 'Stripe transfer failed', error: stripeError.raw ? stripeError.raw.message : stripeError.message });
         }
     }
 
