@@ -34,6 +34,13 @@ const Dashboard: React.FC = () => {
         ]);
         setEvents(eventsData);
         setProfile(profileData);
+
+        // Check stripe status if account exists but not complete
+        if (profileData.stripeAccountId && !profileData.stripeOnboardingComplete) {
+            await api.get('/users/stripe/status');
+            const updatedProfile = await api.get('/users/profile');
+            setProfile(updatedProfile);
+        }
       } catch (error) {
         console.error('Failed to fetch data', error);
       } finally {
