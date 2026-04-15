@@ -15,7 +15,8 @@ router.post('/', authenticate as any, (req: Request, res: Response, next: any) =
       return res.status(400).json({ message: 'No file uploaded' });
     }
     
-    const imageUrl = `http://localhost:8001/uploads/${req.file.filename}`;
+    const baseUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : 'http://localhost:8001';
+    const imageUrl = `${baseUrl.replace('https://momentri-4zt6.vercel.app', 'https://momentri-production.up.railway.app')}/uploads/${req.file.filename}`;
     console.log('Upload Success:', imageUrl);
     res.status(200).json({ imageUrl });
   });
@@ -31,8 +32,9 @@ router.post('/multiple', authenticate as any, (req: Request, res: Response, next
       return res.status(400).json({ message: 'No files uploaded' });
     }
     
+    const baseUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : 'http://localhost:8001';
     const imageUrls = (req.files as Express.Multer.File[]).map(file => 
-      `http://localhost:8001/uploads/${file.filename}`
+      `${baseUrl.replace('https://momentri-4zt6.vercel.app', 'https://momentri-production.up.railway.app')}/uploads/${file.filename}`
     );
     
     res.status(200).json({ imageUrls });
