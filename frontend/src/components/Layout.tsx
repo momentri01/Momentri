@@ -42,6 +42,10 @@ const Layout: React.FC = () => {
                     <LayoutDashboard size={18} />
                     Dashboard
                   </Link>
+                  <Link to="/profile" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                    <User size={18} />
+                    Settings
+                  </Link>
                   <button onClick={handleLogout} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                     <LogOut size={18} />
                     Logout
