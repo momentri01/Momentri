@@ -16,6 +16,9 @@ model User {
   role                    String       @default("USER")
   deliveryAddress         String?
   payoutInfo              String?
+  bio                     String?
+  phoneNumber             String?
+  profileImageUrl         String?
   stripeAccountId         String?      @unique
   stripeOnboardingComplete Boolean     @default(false)
   events                  Event[]
