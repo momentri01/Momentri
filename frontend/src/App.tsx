@@ -14,6 +14,7 @@ import Pricing from './pages/Pricing';
 import HelpCenter from './pages/HelpCenter';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import ProfileSettings from './pages/ProfileSettings';
 
 // Remaining placeholder components
 const Settings = () => <div className="p-8">Settings</div>;
@@ -37,6 +38,7 @@ function App() {
           <Route path="help" element={<HelpCenter />} />
           <Route path="contact" element={<ContactUs />} />
           <Route path="privacy" element={<PrivacyPolicy />} />
+          <Route path="profile" element={<ProfileSettings />} />
           <Route path="settings" element={<Settings />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
