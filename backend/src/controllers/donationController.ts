@@ -53,8 +53,8 @@ export const createDonation = async (req: Request, res: Response) => {
       ],
       mode: 'payment',
       customer_email: donorEmail,
-      success_url: `${FRONTEND_URL}/events/${event.slug}?donation_success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${FRONTEND_URL}/events/${event.slug}?donation_cancel=true`,
+      success_url: `${FRONTEND_URL}/public-event/${event.slug}?donation_success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${FRONTEND_URL}/public-event/${event.slug}?donation_cancel=true`,
       metadata: {
         donationId: donation.id,
         eventId: event.id,

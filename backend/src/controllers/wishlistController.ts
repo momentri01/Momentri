@@ -86,8 +86,8 @@ export const purchaseWishlistItem = async (req: Request, res: Response) => {
             ],
             mode: 'payment',
             customer_email: buyerEmail,
-            success_url: `${FRONTEND_URL}/events/${item.event.slug}?purchase_success=true&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${FRONTEND_URL}/events/${item.event.slug}?purchase_cancel=true`,
+            success_url: `${FRONTEND_URL}/public-event/${item.event.slug}?purchase_success=true&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${FRONTEND_URL}/public-event/${item.event.slug}?purchase_cancel=true`,
             metadata: {
                 purchaseId: purchase.id,
                 eventId: item.eventId,
