@@ -55,6 +55,7 @@ const PublicEvent: React.FC = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
+        // Use the slug from the URL correctly
         const data = await api.get(`/events/${slug}`);
         setEvent(data);
       } catch (error) {
@@ -65,16 +66,12 @@ const PublicEvent: React.FC = () => {
     };
     fetchEvent();
 
-    // Handle query params for success/cancel
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('donation_success')) {
-      alert('Thank you for your donation! Your payment was successful.');
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-    if (params.get('purchase_success')) {
-      alert('Thank you for your purchase! Your payment was successful.');
-      window.history.replaceState({}, document.title, window.location.pathname);
+    // Safely check params
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('donation_success')) {
+      alert('Thank you for your donation!');
+      // Replace state to clean URL without triggering a full page reload or route change
+      window.history.replaceState(null, '', window.location.pathname);
     }
   }, [slug]);
 
