@@ -10,17 +10,21 @@ const LandingPage: React.FC = () => {
     activeEvents: 0
   });
 
+  const [campaignIndex, setCampaignIndex] = useState(0);
+  const mockCampaigns = [
+    { title: "The Thompson Wedding", raised: 8450, goal: 10000, img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Sarah's Medical Fund", raised: 12500, goal: 15000, img: "https://images.unsplash.com/photo-1579684385127-1ecd15d5b8bd?auto=format&fit=crop&q=80&w=1200" },
+  ];
+
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const data = await api.get('/public/stats');
-        setStats(data);
-      } catch (error) {
-        console.error('Failed to fetch platform stats');
-      }
-    };
-    fetchStats();
+    const timer = setInterval(() => {
+      setCampaignIndex((prev) => (prev + 1) % mockCampaigns.length);
+    }, 4000);
+    return () => clearInterval(timer);
   }, []);
+
+  const currentCampaign = mockCampaigns[campaignIndex];
 
   return (
     <div className="flex flex-col bg-white">
@@ -78,22 +82,25 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
             <div className="mt-16 lg:mt-0 lg:col-span-6 relative">
-              <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border-[8px] border-white ring-1 ring-gray-100">
+              <div className="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl border-[8px] border-white ring-1 ring-gray-100 h-[450px]">
                 <img 
-                  src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" 
+                  src={currentCampaign.img}
                   alt="Happy event celebration"
-                  className="w-full aspect-[4/3] object-cover"
+                  className="w-full h-full object-cover transition-opacity duration-500"
                 />
                 <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-lg">
                    <div className="flex justify-between items-end mb-3">
                       <div>
                          <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Live Campaign</p>
-                         <p className="font-bold text-gray-900">The Thompson Wedding</p>
+                         <p className="font-bold text-gray-900">{currentCampaign.title}</p>
                       </div>
-                      <p className="font-black text-primary">$8,450 raised</p>
+                      <p className="font-black text-primary">${currentCampaign.raised.toLocaleString()} raised</p>
                    </div>
                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="w-[75%] h-full bg-primary rounded-full" />
+                      <div 
+                        className="h-full bg-primary rounded-full transition-all duration-500" 
+                        style={{ width: `${(currentCampaign.raised / currentCampaign.goal) * 100}%` }}
+                      />
                    </div>
                 </div>
               </div>
