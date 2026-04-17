@@ -61,8 +61,20 @@ const CreateEvent: React.FC = () => {
     fetchData();
   }, []);
 
+  const getCurrencyForCountry = (country: string) => {
+    if (country === 'Canada') return 'CAD';
+    return 'USD';
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let newData = { ...formData, [name]: value };
+    
+    if (name === 'country') {
+        newData.currency = getCurrencyForCountry(value);
+    }
+    
+    setFormData(newData);
   };
 
   const setVisibility = (value: string) => {
@@ -329,12 +341,11 @@ const CreateEvent: React.FC = () => {
                     name="currency"
                     className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary font-bold"
                     value={formData.currency}
-                    onChange={handleChange}
+                    disabled
                   >
                     <option>USD</option>
                     <option>CAD</option>
                   </select>
-
                 </div>
               </div>
               <div>

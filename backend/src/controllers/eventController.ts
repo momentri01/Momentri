@@ -25,6 +25,12 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
   } = req.body;
   const userId = req.user?.userId;
 
+  // Strict currency validation
+  const expectedCurrency = country === 'Canada' ? 'CAD' : 'USD';
+  if (currency !== expectedCurrency) {
+      return res.status(400).json({ message: `Currency must be ${expectedCurrency} for ${country}` });
+  }
+
   if (!userId) return res.status(401).json({ message: 'Unauthorized' });
 
   try {
