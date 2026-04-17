@@ -54,7 +54,7 @@ const LandingPage: React.FC = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link
-                  to="/register"
+                  to={localStorage.getItem('token') ? '/dashboard' : '/register'}
                   className="inline-flex items-center justify-center rounded-full bg-primary px-10 py-5 text-lg font-bold text-primary-foreground shadow-[0_20px_50px_rgba(var(--primary),0.3)] transition-all hover:bg-primary/90 hover:-translate-y-1"
                 >
                   Start Fundraising Free
