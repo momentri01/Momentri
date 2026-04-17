@@ -25,6 +25,18 @@ const LandingPage: React.FC = () => {
   ];
 
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await api.get('/public/stats');
+        setStats(data);
+      } catch (error) {
+        console.error('Failed to fetch platform stats');
+      }
+    };
+    fetchStats();
+  }, []);
+
+  useEffect(() => {
     const timer = setInterval(() => {
       setCampaignIndex((prev) => (prev + 1) % mockCampaigns.length);
     }, 5000);
