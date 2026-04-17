@@ -15,12 +15,19 @@ const LandingPage: React.FC = () => {
     { title: "The Thompson Wedding", raised: 8450, goal: 10000, img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" },
     { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200" },
     { title: "Sarah's Medical Fund", raised: 12500, goal: 15000, img: "https://images.unsplash.com/photo-1579684385127-1ecd15d5b8bd?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Local School Library", raised: 5200, goal: 7500, img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Animal Shelter Rescue", raised: 3800, goal: 5000, img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Tech for Kids Workshop", raised: 9100, goal: 10000, img: "https://images.unsplash.com/photo-1503676260728-1c09da0947fe?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Ocean Cleanup Initiative", raised: 18000, goal: 20000, img: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Youth Sports Equipment", raised: 1500, goal: 2500, img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Park Renovation", raised: 7800, goal: 9000, img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200" },
   ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCampaignIndex((prev) => (prev + 1) % mockCampaigns.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
