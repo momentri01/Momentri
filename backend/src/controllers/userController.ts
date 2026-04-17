@@ -95,10 +95,11 @@ export const createStripeAccount = async (req: AuthRequest, res: Response) => {
     let stripeAccountId = user.stripeAccountId;
 
     if (!stripeAccountId) {
-      // Create a "Custom" account for minimal requirements
+      // Create an "Express" account for individuals to minimize compliance burden
       const account = await stripe.accounts.create({
-        type: 'custom',
+        type: 'express',
         email: email,
+        business_type: 'individual',
         capabilities: {
           transfers: { requested: true },
         },
@@ -111,15 +112,12 @@ export const createStripeAccount = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Use 'account_update' to collect only necessary banking details
+    // Use 'account_onboarding' to leverage Stripe's hosted Express flow
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
       refresh_url: `${FRONTEND_URL}/dashboard`,
       return_url: `${FRONTEND_URL}/dashboard?stripe_onboarding_success=true`,
-      type: 'account_update',
-      collection_options: {
-        fields: 'currently_due',
-      },
+      type: 'account_onboarding',
     });
 
     res.json({ url: accountLink.url });
