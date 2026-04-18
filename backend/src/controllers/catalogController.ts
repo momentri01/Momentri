@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
+import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
 
-export const createCatalogItem = async (req: Request, res: Response) => {
-  const { name, description, category, price, currency, imageUrl, imageUrls } = req.body;
+export const createCatalogItem = async (req: AuthRequest, res: Response) => {
+  const { name, description, category, price, currency, imageUrl, imageUrls, country } = req.body;
   try {
     const item = await prisma.catalogItem.create({
       data: { 
@@ -10,7 +11,8 @@ export const createCatalogItem = async (req: Request, res: Response) => {
         description, 
         category, 
         price, 
-        currency: currency || 'USD', 
+        currency: currency || 'USD',
+        country: country || 'United States',
         imageUrl: imageUrl || (imageUrls && JSON.parse(imageUrls)[0]) || null,
         imageUrls: imageUrls || '[]'
       },
@@ -21,10 +23,15 @@ export const createCatalogItem = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllCatalogItems = async (req: Request, res: Response) => {
+export const getAllCatalogItems = async (req: AuthRequest, res: Response) => {
+  const userId = req.user?.userId;
+  
   try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const userCountry = user?.country || 'United States';
+
     const items = await prisma.catalogItem.findMany({
-      where: { isActive: true },
+      where: { isActive: true, country: userCountry },
       orderBy: { createdAt: 'desc' },
     });
     
