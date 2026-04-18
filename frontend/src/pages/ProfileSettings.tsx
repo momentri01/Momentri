@@ -11,7 +11,14 @@ const ProfileSettings: React.FC = () => {
     bio: '',
     phoneNumber: '',
     deliveryAddress: '',
+    country: 'United States',
+    province: ''
   });
+
+  const provinces = {
+    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+    'Canada': ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Nova Scotia', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Northwest Territories', 'Nunavut', 'Yukon']
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -23,6 +30,8 @@ const ProfileSettings: React.FC = () => {
           bio: data.bio || '',
           phoneNumber: data.phoneNumber || '',
           deliveryAddress: data.deliveryAddress || '',
+          country: data.country || 'United States',
+          province: data.province || provinces['United States'][0],
         });
       } catch (error) {
         console.error('Failed to fetch profile', error);
@@ -32,6 +41,15 @@ const ProfileSettings: React.FC = () => {
     };
     fetchProfile();
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    let newData = { ...formData, [name]: value };
+    if (name === 'country') {
+        newData.province = provinces[value as keyof typeof provinces][0];
+    }
+    setFormData(newData);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +80,24 @@ const ProfileSettings: React.FC = () => {
            <div>
               <h2 className="text-xl font-bold">{profile?.fullName}</h2>
               <p className="text-muted-foreground">{profile?.email}</p>
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div>
+              <label className="block text-sm font-bold mb-2">Country</label>
+              <select name="country" value={formData.country} onChange={handleChange} className="w-full rounded-xl border p-3">
+                  <option value="United States">United States</option>
+                  <option value="Canada">Canada</option>
+              </select>
+           </div>
+           <div>
+              <label className="block text-sm font-bold mb-2">{formData.country === 'Canada' ? 'Province' : 'State'}</label>
+              <select name="province" value={formData.province} onChange={handleChange} className="w-full rounded-xl border p-3">
+                  {provinces[formData.country as keyof typeof provinces].map(p => (
+                      <option key={p} value={p}>{p}</option>
+                  ))}
+              </select>
            </div>
         </div>
 
