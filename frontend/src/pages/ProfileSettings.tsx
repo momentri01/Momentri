@@ -122,8 +122,13 @@ const ProfileSettings: React.FC = () => {
            <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={e => setFormData({...formData, deliveryAddress: e.target.value})} rows={2} className="w-full rounded-xl border p-3" />
         </div>
 
-        <div className="pt-6 border-t">
-           <button type="submit" disabled={saving} className="bg-primary text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-primary/90 transition-all">
+        <div className="pt-6 border-t mt-10">
+           <button 
+             type="submit" 
+             disabled={saving} 
+             style={{ display: 'flex', opacity: 1, visibility: 'visible' }}
+             className="bg-primary text-white px-8 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-primary/90 transition-all border-2 border-black"
+           >
               {saving ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
               Save Changes
            </button>
