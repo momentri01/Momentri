@@ -1,9 +1,4 @@
 import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth.js';
-import prisma from '../utils/prisma.js';
-import { stripe, FRONTEND_URL } from '../utils/stripe.js';
-
-import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
@@ -95,7 +90,6 @@ export const createStripeAccount = async (req: AuthRequest, res: Response) => {
     let stripeAccountId = user.stripeAccountId;
 
     if (!stripeAccountId) {
-      // Create an "Express" account for individuals to minimize compliance burden
       const account = await stripe.accounts.create({
         type: 'express',
         email: email,
@@ -112,7 +106,6 @@ export const createStripeAccount = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Use 'account_onboarding' to leverage Stripe's hosted Express flow
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
       refresh_url: `${FRONTEND_URL}/dashboard`,
