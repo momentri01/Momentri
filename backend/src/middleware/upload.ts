@@ -8,9 +8,9 @@ const storage = new Storage({
 
 const bucket = storage.bucket('momentris_upload');
 
-const upload = multer({
+const uploadMiddleware = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
-export const upload = upload;
+export const upload = uploadMiddleware;
