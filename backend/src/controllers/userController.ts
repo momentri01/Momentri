@@ -20,7 +20,9 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
         stripeOnboardingComplete: true,
         bio: true,
         phoneNumber: true,
-        profileImageUrl: true
+        profileImageUrl: true,
+        country: true,
+        province: true
       }
     });
     res.json(user);
