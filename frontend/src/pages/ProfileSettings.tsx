@@ -55,10 +55,12 @@ const ProfileSettings: React.FC = () => {
     e.preventDefault();
     setSaving(true);
     try {
+      console.log('Submitting profile:', formData);
       const updated = await api.put('/users/profile', formData);
       setProfile(updated);
       alert('Profile updated successfully!');
     } catch (error) {
+      console.error('Update error:', error);
       alert('Failed to update profile');
     } finally {
       setSaving(false);
