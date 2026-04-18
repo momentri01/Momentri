@@ -31,11 +31,11 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.userId;
-  const { fullName, deliveryAddress, payoutInfo, bio, phoneNumber, profileImageUrl } = req.body;
+  const { fullName, deliveryAddress, payoutInfo, bio, phoneNumber, profileImageUrl, country, province } = req.body;
   try {
     const user = await prisma.user.update({
       where: { id: userId },
-      data: { fullName, deliveryAddress, payoutInfo, bio, phoneNumber, profileImageUrl },
+      data: { fullName, deliveryAddress, payoutInfo, bio, phoneNumber, profileImageUrl, country, province },
       select: { 
         id: true, 
         email: true, 
@@ -47,7 +47,9 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
         stripeOnboardingComplete: true,
         bio: true,
         phoneNumber: true,
-        profileImageUrl: true
+        profileImageUrl: true,
+        country: true,
+        province: true
       }
     });
     res.json(user);
