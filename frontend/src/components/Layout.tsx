@@ -92,6 +92,9 @@ const Layout: React.FC = () => {
                   <Link to="/dashboard" className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted">
                     Dashboard
                   </Link>
+                  <Link to="/profile" className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted">
+                    Settings
+                  </Link>
                   <button onClick={handleLogout} className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted">
                     Logout
                   </button>
