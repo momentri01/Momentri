@@ -41,9 +41,27 @@ const CreateEvent: React.FC = () => {
     donationGoal: '',
     currency: 'USD',
     visibility: 'PUBLIC',
-    country: 'United States',
+    country: '',
+    province: '',
     coverImageUrl: '',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const profile = await api.get('/users/profile');
+        setFormData(prev => ({ 
+            ...prev, 
+            country: profile.country || 'United States',
+            province: profile.province || '',
+            currency: profile.country === 'Canada' ? 'CAD' : 'USD'
+        }));
+      } catch (error) {
+        console.error('Failed to fetch user data');
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {

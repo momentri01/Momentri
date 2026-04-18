@@ -12,10 +12,22 @@ const Register: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    country: 'United States',
+    province: ''
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const provinces = {
+    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+    'Canada': ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Nova Scotia', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Northwest Territories', 'Nunavut', 'Yukon']
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    let newData = { ...formData, [name]: value };
+    if (name === 'country') {
+        newData.province = provinces[value as keyof typeof provinces][0];
+    }
+    setFormData(newData);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +94,32 @@ const Register: React.FC = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-bold mb-2">Password</label>
+            <label className="block text-sm font-bold mb-2">Country</label>
+            <select
+                name="country"
+                required
+                className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary"
+                value={formData.country}
+                onChange={handleChange}
+            >
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-2">{formData.country === 'Canada' ? 'Province' : 'State'}</label>
+            <select
+                name="province"
+                required
+                className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary"
+                value={formData.province}
+                onChange={handleChange}
+            >
+                {provinces[formData.country as keyof typeof provinces].map(p => (
+                    <option key={p} value={p}>{p}</option>
+                ))}
+            </select>
+          </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
               <input

@@ -6,7 +6,7 @@ import prisma from '../utils/prisma.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export const register = async (req: Request, res: Response) => {
-  const { email, password, fullName } = req.body;
+  const { email, password, fullName, country, province } = req.body;
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -20,6 +20,8 @@ export const register = async (req: Request, res: Response) => {
         email,
         passwordHash,
         fullName,
+        country,
+        province,
       },
     });
 
@@ -29,7 +31,7 @@ export const register = async (req: Request, res: Response) => {
       { expiresIn: '7d' }
     );
 
-    res.status(201).json({ token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } });
+    res.status(201).json({ token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role, country: user.country, province: user.province } });
   } catch (error: any) {
     console.error("REGISTER ERROR:", error);
     res.status(500).json({ message: 'Something went wrong', error: error.message });

@@ -19,6 +19,8 @@ model User {
   bio                     String?
   phoneNumber             String?
   profileImageUrl         String?
+  country                 String?
+  province                String?
   stripeAccountId         String?      @unique
   stripeOnboardingComplete Boolean     @default(false)
   events                  Event[]
