@@ -21,6 +21,9 @@ model User {
   profileImageUrl         String?
   country                 String?
   province                String?
+  businessName            String?
+  registrationNumber      String?
+  isCharity               Boolean      @default(false)
   stripeAccountId         String?      @unique
   stripeOnboardingComplete Boolean     @default(false)
   events                  Event[]
