@@ -10,6 +10,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import PublicEvent from './pages/PublicEvent';
 import ManageEvent from './pages/ManageEvent';
 import AdminDashboard from './pages/AdminDashboard';
+import B2B from './pages/B2B';
 import Pricing from './pages/Pricing';
 import HelpCenter from './pages/HelpCenter';
 import ContactUs from './pages/ContactUs';
@@ -40,6 +41,7 @@ function App() {
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="profile" element={<ProfileSettings />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="b2b" element={<B2B />} />
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Route>

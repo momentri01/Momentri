@@ -282,6 +282,46 @@ const LandingPage: React.FC = () => {
          </div>
       </section>
 
+      {/* B2B Promo Section */}
+      <section className="py-24 bg-white border-y">
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-slate-50 rounded-[3rem] p-10 md:p-16 border flex flex-col md:flex-row items-center gap-12">
+               <div className="flex-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                    <Globe size={14} />
+                    For Organizations & Charities
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">Scale your impact with Momentri for Business</h2>
+                  <p className="text-lg text-muted-foreground mb-8 font-medium">
+                     Professional tools for registered charities, nonprofits, and corporate CSR teams. 
+                     Automated tax receipts, verified registries, and detailed impact analytics.
+                  </p>
+                  <Link
+                    to="/b2b"
+                    className="inline-flex items-center justify-center rounded-full bg-gray-900 px-8 py-4 text-lg font-bold text-white transition-all hover:bg-gray-800 hover:-translate-y-1"
+                  >
+                    Explore Organization Tools
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+               </div>
+               <div className="flex-1 grid grid-cols-2 gap-4">
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
+                     <p className="text-2xl font-black text-primary mb-1">2.5%</p>
+                     <p className="text-[10px] font-bold text-gray-400 uppercase">Lowest Fees</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
+                     <p className="text-2xl font-black text-primary mb-1">Instant</p>
+                     <p className="text-[10px] font-bold text-gray-400 uppercase">Tax Receipts</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center col-span-2">
+                     <p className="text-2xl font-black text-primary mb-1">Verified</p>
+                     <p className="text-[10px] font-bold text-gray-400 uppercase">Trust Badges for Charities</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
