@@ -30,7 +30,7 @@ const PrivacyPolicy: React.FC = () => {
                  2. How We Use Your Data
               </h2>
               <p className="text-gray-600 leading-relaxed font-medium">
-                 We use your information to facilitate donations, manage gift registries, and process payouts. Specifically, delivery addresses provided by event hosts are **strictly private** and are only used by Momentri's internal fulfillment team to ship physical gifts.
+                 We use your information to facilitate donations, manage gift registries, and process payouts. Specifically, delivery addresses provided by event hosts are **strictly private** and are only used by Momentris's internal fulfillment team to ship physical gifts.
               </p>
            </section>
 
@@ -40,7 +40,7 @@ const PrivacyPolicy: React.FC = () => {
                  Special Note on Registry Privacy
               </h3>
               <p className="text-sm text-gray-600 font-bold leading-relaxed">
-                 Donors and supporters never see the delivery address of an event host. When an item is purchased from a registry, the fulfillment is handled entirely by Momentri and our logistics partners. Your location is never displayed on public event pages.
+                 Donors and supporters never see the delivery address of an event host. When an item is purchased from a registry, the fulfillment is handled entirely by Momentris and our logistics partners. Your location is never displayed on public event pages.
               </p>
            </section>
 
@@ -56,7 +56,7 @@ const PrivacyPolicy: React.FC = () => {
 
            <section className="pt-12 border-t text-center">
               <p className="text-muted-foreground text-sm font-medium">
-                 If you have questions about our privacy practices, please contact us at <span className="text-primary font-bold">privacy@momentri.com</span>.
+                 If you have questions about our privacy practices, please contact us at <span className="text-primary font-bold">privacy@momentriss.com</span>.
               </p>
            </section>
         </div>

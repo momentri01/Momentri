@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Building2, 
-  Heart, 
   ShieldCheck, 
   BarChart3, 
   Users, 
@@ -31,7 +30,7 @@ const B2B: React.FC = () => {
             <div className="sm:text-center md:max-w-3xl md:mx-auto lg:col-span-7 lg:text-left">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white text-xs font-bold uppercase tracking-widest mb-8 backdrop-blur-md border border-white/10">
                 <Building2 size={16} className="text-primary" />
-                Momentri for Organizations
+                Momentris for Organizations
               </div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.05] mb-8 text-balance">
                 Scale your mission with <span className="text-primary italic">professional fundraising.</span>
@@ -116,7 +115,7 @@ const B2B: React.FC = () => {
           <div className="text-center max-w-4xl mx-auto mb-24">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tight">Professional tools for your cause.</h2>
             <p className="text-xl text-slate-600 font-medium leading-relaxed">
-              Whether you're a registered charity or a corporate CSR team, Momentri provides the infrastructure to manage donations and demonstrate impact.
+              Whether you're a registered charity or a corporate CSR team, Momentris provides the infrastructure to manage donations and demonstrate impact.
             </p>
           </div>
 
@@ -189,7 +188,7 @@ const B2B: React.FC = () => {
                   </div>
                   <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-10 leading-tight tracking-tight">A platform built for organizational trust.</h2>
                   <p className="text-xl text-slate-600 mb-12 leading-relaxed font-medium">
-                     We understand the importance of accountability. Momentri provides the specialized tools charities need to operate professionally and securely.
+                     We understand the importance of accountability. Momentris provides the specialized tools charities need to operate professionally and securely.
                   </p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -228,7 +227,7 @@ const B2B: React.FC = () => {
             <div className="relative z-10 max-w-3xl mx-auto">
                <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tight leading-tight">Ready to amplify <br /> your organization's impact?</h2>
                <p className="text-xl text-slate-400 mb-14 font-medium leading-relaxed">
-                 Join the growing number of organizations using Momentri to create meaningful change.
+                 Join the growing number of organizations using Momentris to create meaningful change.
                </p>
                <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link

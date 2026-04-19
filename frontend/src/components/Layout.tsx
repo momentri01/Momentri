@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { Menu, X, Heart, User, LogOut, LayoutDashboard, ShieldAlert } from 'lucide-react';
+import { Menu, X, HandHeart, User, LogOut, LayoutDashboard, ShieldAlert } from 'lucide-react';
 
 const Layout: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,8 +20,8 @@ const Layout: React.FC = () => {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <Link to="/" className="flex items-center space-x-2">
-                <Heart className="h-8 w-8 text-primary" fill="currentColor" />
-                <span className="text-2xl font-bold tracking-tight text-primary">Momentri</span>
+                <HandHeart className="h-8 w-8 text-primary" fill="currentColor" />
+                <span className="text-2xl font-bold tracking-tight text-primary">Momentris</span>
               </Link>
             </div>
 
@@ -129,8 +129,8 @@ const Layout: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <Heart className="h-6 w-6 text-primary" fill="currentColor" />
-                <span className="text-xl font-bold tracking-tight text-primary">Momentri</span>
+                <HandHeart className="h-6 w-6 text-primary" fill="currentColor" />
+                <span className="text-xl font-bold tracking-tight text-primary">Momentris</span>
               </div>
               <p className="text-muted-foreground text-sm max-w-xs">
                 Empowering communities to raise funds for what matters most. Clean, simple, and transparent.
@@ -155,7 +155,7 @@ const Layout: React.FC = () => {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Momentri. All rights reserved.
+            © {new Date().getFullYear()} Momentris. All rights reserved.
           </div>
         </div>
       </footer>

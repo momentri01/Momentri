@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Heart, Gift, Share2, Calendar, MapPin, User, MessageCircle, X, ShoppingCart, Minus, Plus, CheckCircle2, ShieldCheck, Flag, TrendingUp, Users, AlertTriangle } from 'lucide-react';
+import { HandHeart, Gift, Share2, Calendar, MapPin, User, MessageCircle, X, ShoppingCart, Minus, Plus, CheckCircle2, ShieldCheck, Flag, TrendingUp, Users, AlertTriangle } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 interface EventData {
@@ -162,7 +162,7 @@ const PublicEvent: React.FC = () => {
                   <img src={event.coverImageUrl} className="w-full h-full object-cover" alt={event.title} />
                ) : (
                   <div className="w-full h-full flex items-center justify-center text-primary/10">
-                     <Heart size={120} fill="currentColor" />
+                     <HandHeart size={120} fill="currentColor" />
                   </div>
                )}
             </div>
@@ -371,7 +371,7 @@ const PublicEvent: React.FC = () => {
                            {event.isVerified && (
                               <p className="text-[10px] text-green-600 font-black uppercase tracking-widest flex items-center gap-1">
                                  <ShieldCheck size={12} className="fill-green-600 text-white" />
-                                 Momentri Verified
+                                 Momentris Verified
                               </p>
                            )}
                         </div>
@@ -472,7 +472,7 @@ const PublicEvent: React.FC = () => {
                     <AlertTriangle size={32} />
                  </div>
                  <h2 className="text-2xl font-black tracking-tight text-gray-900">Report this fundraiser</h2>
-                 <p className="text-sm text-muted-foreground font-medium mt-2">Help us keep Momentri safe. Tell us why you are reporting this fundraiser.</p>
+                 <p className="text-sm text-muted-foreground font-medium mt-2">Help us keep Momentris safe. Tell us why you are reporting this fundraiser.</p>
               </div>
 
               <form onSubmit={handleReport} className="space-y-6">

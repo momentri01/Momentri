@@ -52,9 +52,9 @@ const HelpCenter: React.FC = () => {
             <h2 className="text-3xl font-black text-center mb-16">Frequently Asked Questions</h2>
             <div className="space-y-6">
                {[
-                  { q: 'Is my delivery address shared with donors?', a: 'No. Your delivery address is strictly private and only visible to Momentri administrators for the purpose of shipping registry items to you.' },
+                  { q: 'Is my delivery address shared with donors?', a: 'No. Your delivery address is strictly private and only visible to Momentris administrators for the purpose of shipping registry items to you.' },
                   { q: 'How long do withdrawals take?', a: 'Withdrawal requests are typically reviewed within 24 hours and processed within 1-3 business days depending on your payout method.' },
-                  { q: 'What fees does Momentri charge?', a: 'We charge a flat 10% platform fee on all successful transactions. There are no monthly costs or hidden setup fees.' }
+                  { q: 'What fees does Momentris charge?', a: 'We charge a flat 10% platform fee on all successful transactions. There are no monthly costs or hidden setup fees.' }
                ].map((faq, i) => (
                   <div key={i} className="bg-white p-8 rounded-3xl border shadow-sm">
                      <h4 className="font-black text-gray-900 mb-2">{faq.q}</h4>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Rocket, Shield, Heart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe } from 'lucide-react';
+import { Rocket, Shield, HandHeart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe } from 'lucide-react';
 import { api } from '../lib/api';
 
 const LandingPage: React.FC = () => {
@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed mb-10 max-w-xl">
-                Momentri combines direct donations with a beautiful gift registry. 
+                Momentris combines direct donations with a beautiful gift registry. 
                 Perfect for weddings, community causes, and everything in between.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -131,7 +131,7 @@ const LandingPage: React.FC = () => {
               <div className="absolute -top-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border animate-bounce duration-[3000ms] hidden sm:block">
                  <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
-                       <Heart size={20} fill="currentColor" />
+                       <HandHeart size={20} fill="currentColor" />
                     </div>
                     <div>
                        <p className="text-[10px] font-bold text-gray-400 uppercase">New Donation</p>
@@ -152,7 +152,7 @@ const LandingPage: React.FC = () => {
                <div className="text-2xl font-black italic">TRUSTEE</div>
                <div className="text-2xl font-black">GIVING.CO</div>
                <div className="text-2xl font-black tracking-tighter underline underline-offset-4">REGISTRY.</div>
-               <div className="text-2xl font-black">MOMENTRI</div>
+               <div className="text-2xl font-black">MOMENTRIS</div>
                <div className="text-2xl font-black italic">HEARTCORE</div>
             </div>
          </div>
@@ -244,7 +244,7 @@ const LandingPage: React.FC = () => {
                </div>
                <div className="order-1 md:order-2">
                   <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-                     <Heart size={24} />
+                     <HandHeart size={24} />
                   </div>
                   <h3 className="text-3xl font-bold text-gray-900 mb-6">Direct impact through simple donations</h3>
                   <p className="text-lg text-muted-foreground mb-8">
@@ -269,10 +269,10 @@ const LandingPage: React.FC = () => {
       <section className="py-24 bg-primary/5">
          <div className="max-w-4xl mx-auto px-4 text-center">
             <div className="mb-10 text-primary">
-               <Heart size={48} className="mx-auto" fill="currentColor" />
+               <HandHeart size={48} className="mx-auto" fill="currentColor" />
             </div>
             <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-10 leading-tight italic">
-               "Momentri changed how our community raises funds. It’s professional, beautiful, and so easy for donors to use. We raised $10k in just two weeks!"
+               "Momentris changed how our community raises funds. It’s professional, beautiful, and so easy for donors to use. We raised $10k in just two weeks!"
             </h2>
             <div className="flex flex-col items-center">
                <img src="https://i.pravatar.cc/150?u=sarah" className="w-16 h-16 rounded-full border-4 border-white shadow-lg mb-4" alt="Sarah" />
@@ -291,7 +291,7 @@ const LandingPage: React.FC = () => {
                     <Globe size={14} />
                     For Organizations & Charities
                   </div>
-                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">Scale your impact with Momentri for Business</h2>
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">Scale your impact with Momentris for Business</h2>
                   <p className="text-lg text-muted-foreground mb-8 font-medium">
                      Professional tools for registered charities, nonprofits, and corporate CSR teams. 
                      Issue tax receipts, manage donors, and access detailed impact analytics.
@@ -333,7 +333,7 @@ const LandingPage: React.FC = () => {
             <div className="relative z-10">
                <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Ready to start your <br /> next campaign?</h2>
                <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium">
-                 Join thousands of organizers who use Momentri to fund weddings, baby showers, and community causes.
+                 Join thousands of organizers who use Momentris to fund weddings, baby showers, and community causes.
                </p>
                <Link
                  to="/register"

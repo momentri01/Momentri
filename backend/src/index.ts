@@ -67,7 +67,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/reports', reportRoutes);
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Momentri Backend API is running!');
+  res.send('Momentris Backend API is running!');
 });
 
 app.listen(port, () => {

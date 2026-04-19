@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { Role } from './types/prisma.js';
 
 async function main() {
-  const email = 'momentri01@gmail.com';
+  const email = 'momentris01@gmail.com';
   const password = 'Big_moment@2026';
   const fullName = 'Platform Admin';
 

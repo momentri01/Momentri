@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Heart, Mail, Lock, ArrowRight } from 'lucide-react';
+import { HandHeart, Mail, Lock, ArrowRight } from 'lucide-react';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -36,8 +36,8 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Heart className="h-10 w-10 text-primary" fill="currentColor" />
-            <span className="text-3xl font-bold tracking-tight text-primary">Momentri</span>
+            <HandHeart className="h-10 w-10 text-primary" fill="currentColor" />
+            <span className="text-3xl font-bold tracking-tight text-primary">Momentris</span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="text-muted-foreground mt-2">Log in to manage your fundraising events.</p>

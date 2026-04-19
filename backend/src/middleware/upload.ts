@@ -6,7 +6,7 @@ const storage = new Storage({
   projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
 });
 
-const bucket = storage.bucket('momentris_upload');
+const bucket = storage.bucket('momentriss_upload');
 
 const uploadMiddleware = multer({
   storage: multer.memoryStorage(),

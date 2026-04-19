@@ -568,7 +568,7 @@ const CreateEvent: React.FC = () => {
                  <div className="bg-green-50 border border-green-100 rounded-2xl p-4 mb-8 flex gap-3 items-start text-left">
                     <ShieldCheck className="text-green-600 mt-0.5 flex-shrink-0" size={18} />
                     <p className="text-xs text-green-800 font-bold leading-relaxed">
-                       Privacy Guarantee: Your address is never shared with donors or displayed publicly. It is only used by Momentri staff for shipping.
+                       Privacy Guarantee: Your address is never shared with donors or displayed publicly. It is only used by Momentris staff for shipping.
                     </p>
                  </div>
 

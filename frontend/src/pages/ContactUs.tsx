@@ -21,7 +21,7 @@ const ContactUs: React.FC = () => {
                   </div>
                   <div>
                      <h4 className="font-bold text-gray-900 mb-1">Email Us</h4>
-                     <p className="text-muted-foreground font-medium">support@momentri.com</p>
+                     <p className="text-muted-foreground font-medium">support@momentriss.com</p>
                      <p className="text-xs text-gray-400 mt-1">Typical response time: 2 hours</p>
                   </div>
                </div>

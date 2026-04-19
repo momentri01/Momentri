@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Heart, User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { HandHeart, User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 const provinces: Record<string, string[]> = {
     'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
@@ -68,8 +68,8 @@ const Register: React.FC = () => {
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <Heart className="h-10 w-10 text-primary" fill="currentColor" />
-            <span className="text-3xl font-bold tracking-tight text-primary">Momentri</span>
+            <HandHeart className="h-10 w-10 text-primary" fill="currentColor" />
+            <span className="text-3xl font-bold tracking-tight text-primary">Momentris</span>
           </Link>
           <div className="flex bg-gray-100 p-1 rounded-full mb-6">
             <button type="button" className={`flex-1 py-2 rounded-full font-bold ${activeTab === 'individual' ? 'bg-white shadow-sm' : ''}`} onClick={() => setActiveTab('individual')}>Individual</button>
