@@ -5,7 +5,7 @@ import { Role } from '../types/prisma.js';
 
 const router = Router();
 
-router.get('/', getAllCatalogItems);
+router.get('/', authenticate as any, getAllCatalogItems as any);
 router.post('/', authenticate as any, authorize([Role.ADMIN]) as any, createCatalogItem as any);
 router.put('/:id', authenticate as any, authorize([Role.ADMIN]) as any, updateCatalogItem as any);
 router.delete('/:id', authenticate as any, authorize([Role.ADMIN]) as any, deleteCatalogItem as any);

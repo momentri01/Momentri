@@ -27,8 +27,14 @@ export const getAllCatalogItems = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.userId;
   
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    const userCountry = user?.country || 'United States';
+    let userCountry = 'United States';
+    
+    if (userId) {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (user?.country) {
+        userCountry = user.country;
+      }
+    }
 
     const items = await prisma.catalogItem.findMany({
       where: { isActive: true, country: userCountry },
@@ -43,6 +49,7 @@ export const getAllCatalogItems = async (req: AuthRequest, res: Response) => {
 
     res.json(parsedItems);
   } catch (error) {
+    console.error('getAllCatalogItems Error:', error);
     res.status(500).json({ message: 'Error fetching catalog', error });
   }
 };
