@@ -14,6 +14,7 @@ interface EventData {
   totalDonationsNet: number;
   currency: string;
   country: string;
+  province?: string;
   coverImageUrl: string;
   isVerified: boolean;
   owner: { fullName: string };
