@@ -13,17 +13,18 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     country: 'United States',
-    province: ''
+    province: '',
+    businessName: '',
+    registrationNumber: '',
+    isCharity: false,
+    role: 'USER'
   });
 
-  const provinces = {
-    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
-    'Canada': ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Nova Scotia', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Northwest Territories', 'Nunavut', 'Yukon']
-  };
+  const [activeTab, setActiveTab] = useState<'individual' | 'organization'>('individual');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    let newData = { ...formData, [name]: value };
+    const { name, value, type, checked } = e.target;
+    let newData = { ...formData, [name]: type === 'checkbox' ? checked : value };
     if (name === 'country') {
         newData.province = provinces[value as keyof typeof provinces][0];
     }
