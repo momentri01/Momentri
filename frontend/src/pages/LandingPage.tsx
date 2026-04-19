@@ -11,6 +11,7 @@ const LandingPage: React.FC = () => {
   });
 
   const [campaignIndex, setCampaignIndex] = useState(0);
+  const [activePhrase, setActivePhrase] = useState(0);
   const mockCampaigns = [
     { title: "The Thompson Wedding", raised: 8450, goal: 10000, img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" },
     { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200" },
@@ -23,6 +24,8 @@ const LandingPage: React.FC = () => {
     { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&q=80&w=1200" },
     { title: "Park Renovation", raised: 7800, goal: 9000, img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200" },
   ];
+
+  const phrases = ["what matters.", "your dreams.", "your community.", "every milestone.", "urgent causes."];
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -39,6 +42,7 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setCampaignIndex((prev) => (prev + 1) % mockCampaigns.length);
+      setActivePhrase((prev) => (prev + 1) % phrases.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
@@ -64,8 +68,8 @@ const LandingPage: React.FC = () => {
               </div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tight text-gray-900 leading-[1.1] mb-6">
                 Raise money for <br />
-                <span className="text-primary relative">
-                  what matters.
+                <span className="text-primary relative inline-block animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  {phrases[activePhrase]}
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 100 10" preserveAspectRatio="none">
                     <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="2" fill="none" className="text-primary/30" />
                   </svg>
