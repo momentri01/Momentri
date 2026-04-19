@@ -184,7 +184,7 @@ const PublicEvent: React.FC = () => {
                   <div className="flex items-center gap-4 mt-1">
                      <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Calendar size={14} className="text-gray-400" />
-                        Created {new Date(event.eventDate).toLocaleDateString()}
+                        Event Date: {new Date(event.eventDate).toLocaleDateString()}
                      </span>
                      <span className="text-xs text-muted-foreground flex items-center gap-1 border-l pl-4">
                         <MapPin size={14} className="text-gray-400" />
