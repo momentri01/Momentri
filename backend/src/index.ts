@@ -37,7 +37,8 @@ console.log("ENV CHECK:", {
 const app: Express = express();
 const port = process.env.PORT || 8000;
 
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+console.log("CORS CHECK: Allowed Origin is", allowedOrigin);
 
 app.use(cors({
   origin: allowedOrigin,
