@@ -10,9 +10,9 @@ import {
   ArrowRight, 
   Zap, 
   Globe,
-  Gift,
   HandHeart,
-  Briefcase
+  Briefcase,
+  FileText
 } from 'lucide-react';
 
 const B2B: React.FC = () => {
@@ -34,24 +34,24 @@ const B2B: React.FC = () => {
                 Momentri for Organizations
               </div>
               <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white leading-[1.05] mb-8 text-balance">
-                Empower your mission with <span className="text-primary italic">modern fundraising.</span>
+                Scale your mission with <span className="text-primary italic">professional fundraising.</span>
               </h1>
               <p className="text-xl text-slate-300 leading-relaxed mb-12 max-w-2xl">
-                The enterprise-grade platform for charities and nonprofits to raise funds, manage registries, and scale social impact with radical transparency.
+                The enterprise-grade platform for charities and nonprofits to raise funds, manage donors, and issue tax receipts with radical transparency.
               </p>
               <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
                 <Link
                   to="/register"
                   className="inline-flex items-center justify-center rounded-full bg-primary px-10 py-5 text-lg font-bold text-primary-foreground shadow-2xl shadow-primary/30 transition-all hover:bg-primary/90 hover:-translate-y-1 active:translate-y-0"
                 >
-                  Register Organization
+                  Create Organization Account
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
                 <Link
                   to="/contact"
                   className="inline-flex items-center justify-center rounded-full bg-white/5 border border-white/20 px-10 py-5 text-lg font-bold text-white shadow-sm transition-all hover:bg-white/10 backdrop-blur-sm"
                 >
-                  Schedule a Demo
+                  Contact for Inquiries
                 </Link>
               </div>
             </div>
@@ -65,28 +65,27 @@ const B2B: React.FC = () => {
                           <div className="w-3 h-3 rounded-full bg-yellow-400/40" />
                           <div className="w-3 h-3 rounded-full bg-green-400/40" />
                        </div>
-                       <div className="px-4 py-1.5 rounded-full bg-slate-800/80 text-[10px] font-bold text-slate-400 tracking-widest uppercase border border-white/5">Organization Portal</div>
+                       <div className="px-4 py-1.5 rounded-full bg-slate-800/80 text-[10px] font-bold text-slate-400 tracking-widest uppercase border border-white/5">Impact Portal</div>
                     </div>
                     
                     <div className="space-y-8">
-                       <div className="grid grid-cols-2 gap-5">
-                          <div className="bg-white/5 p-5 rounded-3xl border border-white/5">
-                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Funds Raised</p>
-                             <p className="text-3xl font-black text-white">$2.4M</p>
-                          </div>
-                          <div className="bg-white/5 p-5 rounded-3xl border border-white/5">
-                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Verified Donors</p>
-                             <p className="text-3xl font-black text-white">12.8k</p>
+                       <div className="grid grid-cols-1 gap-5">
+                          <div className="bg-white/5 p-6 rounded-3xl border border-white/5 text-center">
+                             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Platform Verification</p>
+                             <div className="flex items-center justify-center gap-2 text-primary">
+                                <ShieldCheck size={24} />
+                                <p className="text-xl font-black text-white uppercase italic">Verified Charity</p>
+                             </div>
                           </div>
                        </div>
                        
                        <div className="bg-white/5 p-6 rounded-3xl border border-white/5">
                           <div className="flex justify-between items-center mb-5">
-                             <p className="font-bold text-slate-200">Annual Charity Drive</p>
-                             <p className="text-primary font-black">88%</p>
+                             <p className="font-bold text-slate-200 text-sm">Campaign Progress</p>
+                             <p className="text-primary font-black text-sm">Live</p>
                           </div>
                           <div className="w-full h-4 bg-slate-800 rounded-full overflow-hidden p-1">
-                             <div className="h-full bg-primary w-[88%] rounded-full shadow-[0_0_25px_rgba(var(--primary),0.6)] animate-pulse" />
+                             <div className="h-full bg-primary w-[75%] rounded-full shadow-[0_0_25px_rgba(var(--primary),0.6)] animate-pulse" />
                           </div>
                        </div>
 
@@ -94,14 +93,11 @@ const B2B: React.FC = () => {
                           {[1, 2].map(i => (
                              <div key={i} className="flex items-center gap-5 bg-white/5 p-4 rounded-2xl border border-white/5">
                                 <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                                   <Heart size={24} fill={i === 1 ? "currentColor" : "none"} />
+                                   <FileText size={24} />
                                 </div>
                                 <div className="flex-1">
                                    <div className="h-2.5 w-32 bg-slate-700 rounded-full mb-3" />
                                    <div className="h-2 w-20 bg-slate-800 rounded-full" />
-                                </div>
-                                <div className="text-right">
-                                   <div className="h-4 w-12 bg-primary/20 rounded-md" />
                                 </div>
                              </div>
                           ))}
@@ -109,43 +105,18 @@ const B2B: React.FC = () => {
                     </div>
                   </div>
                </div>
-               
-               {/* Trust Badge */}
-               <div className="absolute -bottom-8 -left-8 bg-white p-6 rounded-[2rem] shadow-2xl border flex items-center gap-4 animate-float">
-                  <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-white">
-                     <ShieldCheck size={28} />
-                  </div>
-                  <div>
-                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Verification</p>
-                     <p className="text-sm font-bold text-gray-900">Security Level: Enterprise</p>
-                  </div>
-               </div>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Trust Bar */}
-      <section className="py-16 border-b bg-slate-50/50">
-         <div className="max-w-7xl mx-auto px-4 text-center">
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mb-10">Trusted by Global Philanthropies & Corporate Teams</p>
-            <div className="flex flex-wrap justify-center items-center gap-20 opacity-40 grayscale contrast-125">
-               <div className="text-2xl font-black tracking-tighter">HUMANITY.CO</div>
-               <div className="text-2xl font-black italic">GLOBAL AID</div>
-               <div className="text-2xl font-black tracking-widest underline decoration-primary decoration-4 underline-offset-8">VIRTUE</div>
-               <div className="text-2xl font-black">AMPLIFY</div>
-               <div className="text-2xl font-black tracking-tight italic">UNITED.FUND</div>
-            </div>
-         </div>
       </section>
 
       {/* Core Solutions Section */}
       <section className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto mb-24">
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tight">Tools built for the scale of your impact.</h2>
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tight">Professional tools for your cause.</h2>
             <p className="text-xl text-slate-600 font-medium leading-relaxed">
-              Whether you're a registered charity or a corporate CSR team, Momentri provides the professional infrastructure you need to drive results.
+              Whether you're a registered charity or a corporate CSR team, Momentri provides the infrastructure to manage donations and demonstrate impact.
             </p>
           </div>
 
@@ -155,12 +126,12 @@ const B2B: React.FC = () => {
               <div className="w-20 h-20 bg-primary/10 text-primary rounded-[2rem] flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500">
                 <HandHeart size={40} />
               </div>
-              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Registered Charities</h3>
+              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Charity Verification</h3>
               <p className="text-slate-600 leading-relaxed mb-10 font-medium text-lg">
-                Automate tax receipts, manage verified registries for specific projects, and maintain donor trust with bank-level security.
+                Showcase your registration status and gain donor trust with our verified organization badge.
               </p>
               <ul className="space-y-5">
-                 {['Verified Registry Items', 'Low 2.5% Platform Fees', 'Automated Tax Compliance'].map(item => (
+                 {['Registration Number Display', 'Verified Trust Badge', 'Official Donor Receipts'].map(item => (
                     <li key={item} className="flex items-center gap-3 text-sm font-bold text-slate-500">
                        <CheckCircle2 size={18} className="text-primary" /> {item}
                     </li>
@@ -168,17 +139,17 @@ const B2B: React.FC = () => {
               </ul>
             </div>
 
-            {/* For Corporations */}
+            {/* Tax Receipts */}
             <div className="group p-12 rounded-[3rem] bg-slate-50 border border-slate-100 transition-all hover:bg-white hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)] hover:-translate-y-2">
               <div className="w-20 h-20 bg-blue-100 text-blue-600 rounded-[2rem] flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500">
-                <Briefcase size={40} />
+                <FileText size={40} />
               </div>
-              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Corporate Giving</h3>
+              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Tax Receipts</h3>
               <p className="text-slate-600 leading-relaxed mb-10 font-medium text-lg">
-                Engage employees with matched giving, team challenges, and beautiful project dashboards for your annual impact report.
+                Registered charities can issue official tax receipts directly through the platform, simplifying the donation process.
               </p>
               <ul className="space-y-5">
-                 {['Employee Matching Logic', 'CSR Impact Reporting', 'Team Leaderboards'].map(item => (
+                 {['Automated Emailing', 'Custom Branding', 'Compliance Ready'].map(item => (
                     <li key={item} className="flex items-center gap-3 text-sm font-bold text-slate-500">
                        <CheckCircle2 size={18} className="text-blue-500" /> {item}
                     </li>
@@ -191,12 +162,12 @@ const B2B: React.FC = () => {
               <div className="w-20 h-20 bg-slate-900 text-white rounded-[2rem] flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500">
                 <BarChart3 size={40} />
               </div>
-              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Radical Transparency</h3>
+              <h3 className="text-2xl font-black mb-6 text-slate-900 tracking-tight">Impact Tracking</h3>
               <p className="text-slate-600 leading-relaxed mb-10 font-medium text-lg">
-                Real-time tracking of every dollar. Detailed analytics that tell the story of your impact to stakeholders and donors.
+                Real-time tracking of every dollar. Detailed analytics to share with your board and supporters.
               </p>
               <ul className="space-y-5">
-                 {['Real-time Dashboards', 'API Data Access', 'Custom White-labeling'].map(item => (
+                 {['Real-time Dashboards', 'Donor Management', 'Exportable Reports'].map(item => (
                     <li key={item} className="flex items-center gap-3 text-sm font-bold text-slate-500">
                        <CheckCircle2 size={18} className="text-slate-900" /> {item}
                     </li>
@@ -210,27 +181,27 @@ const B2B: React.FC = () => {
       {/* Features Detail Section */}
       <section className="py-32 bg-slate-50 overflow-hidden">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="lg:grid lg:grid-cols-2 lg:gap-32 items-center mb-32">
+            <div className="lg:grid lg:grid-cols-2 lg:gap-32 items-center">
                <div>
                   <div className="inline-flex items-center gap-2 text-primary font-black uppercase text-xs tracking-[0.2em] mb-8">
-                     <Gift size={20} fill="currentColor" />
-                     Impact Registries
+                     <ShieldCheck size={20} fill="currentColor" />
+                     Trust & Safety
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-10 leading-tight tracking-tight">Direct action through project-specific registries.</h2>
+                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-10 leading-tight tracking-tight">A platform built for organizational trust.</h2>
                   <p className="text-xl text-slate-600 mb-12 leading-relaxed font-medium">
-                     Move beyond just cash. Organizations can curate lists of specific items needed for a project—whether it's medical supplies for a clinic or equipment for a local school. Donors see exactly where their contribution goes.
+                     We understand the importance of accountability. Momentri provides the specialized tools charities need to operate professionally and securely.
                   </p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                      <div className="p-6 bg-white rounded-3xl border shadow-sm">
                         <CheckCircle2 className="text-green-500 mb-4" size={24} />
-                        <p className="font-black text-slate-900 mb-2">Item Verification</p>
-                        <p className="text-sm text-slate-500 font-medium">Ensure every registry item is vetted and necessary.</p>
+                        <p className="font-black text-slate-900 mb-2">Nonprofit Vetting</p>
+                        <p className="text-sm text-slate-500 font-medium">Ensuring every organization is legitimate.</p>
                      </div>
                      <div className="p-6 bg-white rounded-3xl border shadow-sm">
                         <Users className="text-blue-500 mb-4" size={24} />
-                        <p className="font-black text-slate-900 mb-2">Social Sharing</p>
-                        <p className="text-sm text-slate-500 font-medium">Viral tools to expand your organization's reach.</p>
+                        <p className="font-black text-slate-900 mb-2">Donor Privacy</p>
+                        <p className="text-sm text-slate-500 font-medium">Bank-grade security for your supporters.</p>
                      </div>
                   </div>
                </div>
@@ -242,69 +213,7 @@ const B2B: React.FC = () => {
                         className="w-full aspect-[4/5] object-cover scale-110 hover:scale-100 transition-transform duration-700"
                      />
                   </div>
-                  {/* Decorative */}
-                  <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
                </div>
-            </div>
-
-            <div className="lg:grid lg:grid-cols-2 lg:gap-32 items-center">
-               <div className="order-2 lg:order-1 relative">
-                  <div className="rounded-[4rem] overflow-hidden shadow-3xl -rotate-2 hover:rotate-0 transition-transform duration-700">
-                     <img 
-                        src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200" 
-                        alt="Corporate team collaboration" 
-                        className="w-full aspect-[4/5] object-cover scale-110 hover:scale-100 transition-transform duration-700"
-                     />
-                  </div>
-                  <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -z-10" />
-               </div>
-               <div className="order-1 lg:order-2">
-                  <div className="inline-flex items-center gap-2 text-blue-600 font-black uppercase text-xs tracking-[0.2em] mb-8">
-                     <Globe size={20} fill="currentColor" />
-                     Enterprise Security
-                  </div>
-                  <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-10 leading-tight tracking-tight">Scale securely across your entire organization.</h2>
-                  <p className="text-xl text-slate-600 mb-12 leading-relaxed font-medium">
-                     Momentri is built on top of world-class infrastructure. We provide the security, compliance, and permission controls required for large-scale corporate environments and sensitive philanthropic data.
-                  </p>
-                  
-                  <ul className="space-y-6">
-                     {[
-                        { title: 'SSO Integration', desc: 'Seamless access via Okta, Azure AD, or Google Workspace.' },
-                        { title: 'Role-based Access', desc: 'Granular permissions for team members and auditors.' },
-                        { title: 'Data Sovereignty', desc: 'Full control over your organizational and donor data.' }
-                     ].map((item, i) => (
-                        <li key={i} className="flex gap-5">
-                           <div className="w-10 h-10 rounded-full bg-slate-900 flex-shrink-0 flex items-center justify-center text-white">
-                              <Zap size={18} fill="currentColor" />
-                           </div>
-                           <div>
-                              <p className="font-black text-slate-900">{item.title}</p>
-                              <p className="text-slate-500 font-medium text-sm">{item.desc}</p>
-                           </div>
-                        </li>
-                     ))}
-                  </ul>
-               </div>
-            </div>
-         </div>
-      </section>
-
-      {/* Impact Stats */}
-      <section className="py-24 bg-white">
-         <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
-               {[
-                  { label: 'Global Charities', value: '450+' },
-                  { label: 'Impact Projects', value: '2.5k+' },
-                  { label: 'Donor Retention', value: '78%' },
-                  { label: 'Platform Uptime', value: '99.9%' }
-               ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                     <p className="text-5xl font-black text-slate-900 mb-3">{stat.value}</p>
-                     <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-                  </div>
-               ))}
             </div>
          </div>
       </section>
@@ -319,7 +228,7 @@ const B2B: React.FC = () => {
             <div className="relative z-10 max-w-3xl mx-auto">
                <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tight leading-tight">Ready to amplify <br /> your organization's impact?</h2>
                <p className="text-xl text-slate-400 mb-14 font-medium leading-relaxed">
-                 Join the next generation of organizations using Momentri to create meaningful change. Verification takes less than 24 hours.
+                 Join the growing number of organizations using Momentri to create meaningful change.
                </p>
                <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link
@@ -333,13 +242,9 @@ const B2B: React.FC = () => {
                     to="/contact"
                     className="inline-flex items-center justify-center rounded-full bg-white/5 border border-white/20 px-12 py-6 text-xl font-bold text-white transition-all hover:bg-white/10"
                   >
-                    Contact Sales
+                    Contact Us
                   </Link>
                </div>
-               <p className="mt-12 text-sm text-slate-500 font-bold uppercase tracking-widest flex items-center justify-center gap-3">
-                  <ShieldCheck size={18} className="text-green-500" />
-                  No credit card required to start
-               </p>
             </div>
           </div>
         </div>

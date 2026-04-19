@@ -294,7 +294,7 @@ const LandingPage: React.FC = () => {
                   <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">Scale your impact with Momentri for Business</h2>
                   <p className="text-lg text-muted-foreground mb-8 font-medium">
                      Professional tools for registered charities, nonprofits, and corporate CSR teams. 
-                     Automated tax receipts, verified registries, and detailed impact analytics.
+                     Issue tax receipts, manage donors, and access detailed impact analytics.
                   </p>
                   <Link
                     to="/b2b"
@@ -306,16 +306,16 @@ const LandingPage: React.FC = () => {
                </div>
                <div className="flex-1 grid grid-cols-2 gap-4">
                   <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
-                     <p className="text-2xl font-black text-primary mb-1">2.5%</p>
-                     <p className="text-[10px] font-bold text-gray-400 uppercase">Lowest Fees</p>
+                     <p className="text-2xl font-black text-primary mb-1">Low</p>
+                     <p className="text-[10px] font-bold text-gray-400 uppercase">Platform Fees</p>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
-                     <p className="text-2xl font-black text-primary mb-1">Instant</p>
+                     <p className="text-2xl font-black text-primary mb-1">Direct</p>
                      <p className="text-[10px] font-bold text-gray-400 uppercase">Tax Receipts</p>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-sm border text-center col-span-2">
                      <p className="text-2xl font-black text-primary mb-1">Verified</p>
-                     <p className="text-[10px] font-bold text-gray-400 uppercase">Trust Badges for Charities</p>
+                     <p className="text-[10px] font-bold text-gray-400 uppercase">Organization Trust Badges</p>
                   </div>
                </div>
             </div>
