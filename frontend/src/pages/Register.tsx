@@ -3,6 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { Heart, User, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
+const provinces: Record<string, string[]> = {
+    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+    'Canada': ['Alberta', 'British Columbia', 'Manitoba', 'New Brunswick', 'Newfoundland and Labrador', 'Nova Scotia', 'Ontario', 'Prince Edward Island', 'Quebec', 'Saskatchewan', 'Northwest Territories', 'Nunavut', 'Yukon']
+};
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -13,7 +18,7 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     country: 'United States',
-    province: '',
+    province: 'Alabama',
     businessName: '',
     registrationNumber: '',
     isCharity: false,
@@ -23,10 +28,13 @@ const Register: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'individual' | 'organization'>('individual');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
+    const type = e.target instanceof HTMLInputElement ? e.target.type : 'text';
+    const checked = e.target instanceof HTMLInputElement ? e.target.checked : false;
+    
     let newData = { ...formData, [name]: type === 'checkbox' ? checked : value };
     if (name === 'country') {
-        newData.province = provinces[value as keyof typeof provinces][0];
+        newData.province = provinces[value][0];
     }
     setFormData(newData);
   };
@@ -40,7 +48,10 @@ const Register: React.FC = () => {
     setLoading(true);
     try {
       const { confirmPassword, ...registerData } = formData;
-      const data = await api.post('/auth/register', registerData);
+      const data = await api.post('/auth/register', { 
+          ...registerData, 
+          role: activeTab === 'organization' ? 'ORGANIZATION' : 'USER' 
+      });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/dashboard');
@@ -60,112 +71,69 @@ const Register: React.FC = () => {
             <Heart className="h-10 w-10 text-primary" fill="currentColor" />
             <span className="text-3xl font-bold tracking-tight text-primary">Momentri</span>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
+          <div className="flex bg-gray-100 p-1 rounded-full mb-6">
+            <button type="button" className={`flex-1 py-2 rounded-full font-bold ${activeTab === 'individual' ? 'bg-white shadow-sm' : ''}`} onClick={() => setActiveTab('individual')}>Individual</button>
+            <button type="button" className={`flex-1 py-2 rounded-full font-bold ${activeTab === 'organization' ? 'bg-white shadow-sm' : ''}`} onClick={() => setActiveTab('organization')}>Organization</button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-[2rem] border shadow-xl space-y-6">
           <div>
-            <label className="block text-sm font-bold mb-2">Full Name</label>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <input
-                type="text"
-                name="fullName"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 pl-12 pr-4 py-3 focus:ring-primary"
-                placeholder="John Doe"
-                value={formData.fullName}
-                onChange={handleChange}
-              />
-            </div>
+            <label className="block text-sm font-bold mb-2">{activeTab === 'organization' ? 'Organization Name' : 'Full Name'}</label>
+            <input name="fullName" required className="w-full rounded-xl border p-3" value={formData.fullName} onChange={handleChange} />
           </div>
+          
+          {activeTab === 'organization' && (
+            <>
+              <div>
+                <label className="block text-sm font-bold mb-2">Registration Number</label>
+                <input name="registrationNumber" required className="w-full rounded-xl border p-3" value={formData.registrationNumber} onChange={handleChange} />
+              </div>
+              <label className="flex items-center gap-2">
+                <input type="checkbox" name="isCharity" checked={formData.isCharity} onChange={handleChange} />
+                <span className="text-sm font-bold">Registered Charity?</span>
+              </label>
+            </>
+          )}
+
           <div>
             <label className="block text-sm font-bold mb-2">Email Address</label>
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <input
-                type="email"
-                name="email"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 pl-12 pr-4 py-3 focus:ring-primary"
-                placeholder="john@example.com"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
+            <input name="email" required type="email" className="w-full rounded-xl border p-3" value={formData.email} onChange={handleChange} />
           </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Country</label>
-            <select
-                name="country"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary"
-                value={formData.country}
-                onChange={handleChange}
-            >
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-bold mb-2">Country</label>
+              <select name="country" required className="w-full rounded-xl border p-3" value={formData.country} onChange={handleChange}>
                 <option value="United States">United States</option>
                 <option value="Canada">Canada</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">{formData.country === 'Canada' ? 'Province' : 'State'}</label>
-            <select
-                name="province"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary"
-                value={formData.province}
-                onChange={handleChange}
-            >
-                {provinces[formData.country as keyof typeof provinces].map(p => (
-                    <option key={p} value={p}>{p}</option>
-                ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Password</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 pl-12 pr-12 py-3 focus:ring-primary"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleChange}
-              />
-              <button 
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
+              </select>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-bold mb-2">Confirm Password</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground h-5 w-5" />
-              <input
-                type={showPassword ? "text" : "password"}
-                name="confirmPassword"
-                required
-                className="w-full rounded-xl border-border bg-muted/20 pl-12 pr-12 py-3 focus:ring-primary"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
+            <div>
+              <label className="block text-sm font-bold mb-2">{formData.country === 'Canada' ? 'Province' : 'State'}</label>
+              <select name="province" required className="w-full rounded-xl border p-3" value={formData.province} onChange={handleChange}>
+                {provinces[formData.country].map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-base font-bold text-primary-foreground shadow-lg transition-all hover:bg-primary/90 disabled:opacity-50"
-          >
-            {loading ? 'Creating account...' : 'Get Started Free'}
-            {!loading && <ArrowRight className="ml-2 h-5 w-5" />}
+          <div>
+             <label className="block text-sm font-bold mb-2">Password</label>
+             <div className="relative">
+              <input type={showPassword ? "text" : "password"} name="password" required className="w-full rounded-xl border p-3" value={formData.password} onChange={handleChange} />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2">
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold mb-2">Confirm Password</label>
+            <input type="password" name="confirmPassword" required className="w-full rounded-xl border p-3" value={formData.confirmPassword} onChange={handleChange} />
+          </div>
+
+          <button type="submit" className="w-full bg-primary text-white py-4 rounded-full font-bold">
+            {loading ? 'Creating...' : 'Sign Up'}
           </button>
         </form>
       </div>
