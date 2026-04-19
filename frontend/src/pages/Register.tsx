@@ -132,7 +132,7 @@ const Register: React.FC = () => {
             <input type="password" name="confirmPassword" required className="w-full rounded-xl border p-3" value={formData.confirmPassword} onChange={handleChange} />
           </div>
 
-          <button type="submit" className="w-full bg-primary text-white py-4 rounded-full font-bold">
+          <button type="submit" className="w-full bg-black text-white py-4 rounded-full font-bold hover:bg-gray-800 transition-colors">
             {loading ? 'Creating...' : 'Sign Up'}
           </button>
         </form>
