@@ -77,7 +77,8 @@ const AdminDashboard: React.FC = () => {
     files.forEach(file => uploadData.append('images', file));
 
     try {
-      const response = await fetch('http://localhost:8001/api/upload/multiple', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
+      const response = await fetch(`${apiUrl}/upload/multiple`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -215,6 +216,8 @@ const AdminDashboard: React.FC = () => {
   };
 
   if (loading) return <div className="flex justify-center py-24"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
+
+  if (!stats) return <div className="text-center py-24"><p className="text-red-500 font-bold">Failed to load system statistics. Please refresh.</p></div>;
 
   const cards = [
     { name: 'Total Events', value: stats.totalEvents, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-100' },

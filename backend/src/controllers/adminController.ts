@@ -25,6 +25,7 @@ export const getAdminStats = async (req: AuthRequest, res: Response) => {
       pendingWithdrawals
     });
   } catch (error) {
+    console.error('getAdminStats Error:', error);
     res.status(500).json({ message: 'Error fetching admin stats', error });
   }
 };
@@ -37,6 +38,7 @@ export const getAllEventsAdmin = async (req: AuthRequest, res: Response) => {
     });
     res.json(events);
   } catch (error) {
+    console.error('getAllEventsAdmin Error:', error);
     res.status(500).json({ message: 'Error fetching events', error });
   }
 };
@@ -49,6 +51,7 @@ export const getAllWithdrawalsAdmin = async (req: AuthRequest, res: Response) =>
     });
     res.json(withdrawals);
   } catch (error) {
+    console.error('getAllWithdrawalsAdmin Error:', error);
     res.status(500).json({ message: 'Error fetching withdrawals', error });
   }
 };
@@ -70,6 +73,7 @@ export const getAllOrdersAdmin = async (req: AuthRequest, res: Response) => {
     });
     res.json(orders);
   } catch (error) {
+    console.error('getAllOrdersAdmin Error:', error);
     res.status(500).json({ message: 'Error fetching orders', error });
   }
 };
@@ -148,6 +152,7 @@ export const getAllReportsAdmin = async (req: AuthRequest, res: Response) => {
     });
     res.json(reports);
   } catch (error) {
+    console.error('getAllReportsAdmin Error:', error);
     res.status(500).json({ message: 'Error fetching reports', error });
   }
 };
@@ -161,6 +166,7 @@ export const deleteEventAdmin = async (req: AuthRequest, res: Response) => {
     });
     res.json({ message: 'Event deleted successfully' });
   } catch (error) {
+    console.error('deleteEventAdmin Error:', error);
     res.status(500).json({ message: 'Error deleting event', error });
   }
 };
@@ -175,6 +181,7 @@ export const updateReportStatus = async (req: AuthRequest, res: Response) => {
     });
     res.json(report);
   } catch (error) {
+    console.error('updateReportStatus Error:', error);
     res.status(500).json({ message: 'Error updating report', error });
   }
 };
@@ -189,6 +196,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response) => {
     });
     res.json(order);
   } catch (error) {
+    console.error('updateOrderStatus Error:', error);
     res.status(500).json({ message: 'Error updating order', error });
   }
 };
@@ -207,6 +215,7 @@ export const toggleEventVerification = async (req: AuthRequest, res: Response) =
     });
     res.json(event);
   } catch (error) {
+    console.error('toggleEventVerification Error:', error);
     res.status(500).json({ message: 'Error toggling verification', error });
   }
 };
