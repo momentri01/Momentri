@@ -188,7 +188,7 @@ const PublicEvent: React.FC = () => {
                      </span>
                      <span className="text-xs text-muted-foreground flex items-center gap-1 border-l pl-4">
                         <MapPin size={14} className="text-gray-400" />
-                        {event.country}
+                        {event.province ? `${event.province}, ` : ''}{event.country}
                      </span>
                   </div>
                </div>

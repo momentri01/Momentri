@@ -530,17 +530,6 @@ const CreateEvent: React.FC = () => {
                   </button>
                 </div>
               </div>
-              <div>
-                <label className="block text-sm font-bold mb-2">Country</label>
-                <input
-                  type="text"
-                  name="country"
-                  required
-                  className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary font-medium"
-                  value={formData.country}
-                  onChange={handleChange}
-                />
-              </div>
               <div className="flex gap-4 pt-4">
                  <button
                   type="button"
