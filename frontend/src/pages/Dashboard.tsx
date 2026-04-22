@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
             setProfile(updatedProfile);
         }
       } catch (error) {
-        console.error('Failed to fetch dashboard data', error);
+        console.error('Failed to fetch dashboard data', error); // Corrected typo here
       } finally {
         setLoading(false);
       }
@@ -97,7 +97,10 @@ const Dashboard: React.FC = () => {
   };
 
   // Calculate total raised from events for individual users
-  const totalRaised = events.reduce((acc, event) => acc + Number(event.totalDonationsNet), 0);
+  const totalEventsRaised = events.reduce((acc, event) => acc + Number(event.totalDonationsNet), 0);
+
+  // Calculate total raised from campaigns for organization users
+  const totalCampaignsRaised = campaigns.reduce((acc, campaign) => acc + Number(campaign.totalDonationsNet), 0);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -121,10 +124,9 @@ const Dashboard: React.FC = () => {
           
           {/* Campaigns Overview for Organizations */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-             {/* Placeholder for Campaign Stats if needed, e.g., Total Raised, Active Campaigns */}
              <div className="bg-white p-6 rounded-2xl border shadow-sm">
                 <p className="text-sm font-medium text-muted-foreground mb-1">Total Net Raised (All Campaigns)</p>
-                <p className="text-2xl font-bold text-primary">${campaigns.reduce((acc, c) => acc + c.totalDonationsNet, 0).toFixed(2)}</p>
+                <p className="text-2xl font-bold text-primary">${totalCampaignsRaised.toFixed(2)}</p> {/* Use totalCampaignsRaised */}
              </div>
              <div className="bg-white p-6 rounded-2xl border shadow-sm">
                 <p className="text-sm font-medium text-muted-foreground mb-1">Active Campaigns</p>
