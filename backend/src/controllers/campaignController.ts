@@ -267,7 +267,7 @@ export const sendThankYouNotes = async (req: AuthRequest, res: Response) => {
                 organization: { select: { id: true, businessName: true, fullName: true } },
                 donations: {
                     where: { paymentStatus: 'SUCCESSFUL' },
-                    select: { id: true, donorName: true, donorEmail: true, amount: true, currency: true, createdAt: true } // 'amount' is likely the issue here, schema has grossAmount, netAmount.
+                    select: { id: true, donorName: true, donorEmail: true, netAmount: true, grossAmount: true, currency: true, createdAt: true }
                 }
             }
         });
@@ -314,7 +314,8 @@ export const issueTaxReceipts = async (req: AuthRequest, res: Response) => {
                         id: true,
                         donorName: true,
                         donorEmail: true,
-                        amount: true, // Error here: 'amount' does not exist on DonationSelect, should be netAmount or grossAmount.
+                        netAmount: true,
+                        grossAmount: true,
                         currency: true,
                         createdAt: true
                     }
