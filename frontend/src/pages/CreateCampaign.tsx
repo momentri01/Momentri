@@ -1,44 +1,113 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Calendar, ArrowRight, Plus, Upload, Loader2, ShieldCheck, HandHeart, MapPin } from 'lucide-react';
+import { Calendar, ArrowRight, Plus, Upload, Loader2, ShieldCheck, HandHeart, MapPin, Search, X, Image as ImageIcon } from 'lucide-react'; // Removed unused 'X' if not used, or ensure it's imported if needed
 
-const CreateCampaign: React.FC = () => {
+interface CatalogItem {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  currency: string;
+  imageUrls: string[] | string;
+  country: string; // Ensure country is part of the item interface if used here
+}
+
+interface SelectedItem {
+  catalogItemId: string;
+  quantityRequested: number;
+  name: string;
+  price: number;
+}
+
+const CreateEvent: React.FC = () => {
   const navigate = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [catalog, setCatalog] = useState<CatalogItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [userProfile, setUserProfile] = useState<any>(null); // Should ideally be typed UserProfile
+  const [showAddressPrompt, setShowAddressPrompt] = useState(false);
+  const [tempAddress, setTempAddress] = useState('');
 
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
-  const organizationId = user?.userId; // Assuming userId holds organizationId
-
-  const [formData, setFormData] = useState({
+  // Define initial state more explicitly for clarity
+  const initialFormData = {
     title: '',
     description: '',
-    campaignGoal: '',
+    eventType: 'Wedding',
+    eventDate: '',
+    donationGoal: '',
     currency: 'USD',
-    startDate: '',
-    endDate: '',
-  });
+    visibility: 'PUBLIC',
+    country: 'United States', // Default value
+    province: 'Alabama',     // Default value for US
+  };
+  const [formData, setFormData] = useState(initialFormData);
 
   const countries = ["United States", "Canada"];
-  const provinces = {
+  const provinces: { [key: string]: string[] } = { // Explicitly typing provinces object
     "United States": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"],
     "Canada": ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories", "Nunavut", "Yukon"]
   };
 
+  const getCurrencyForCountry = (country: string): string => {
+    if (country === 'Canada') return 'CAD';
+    return 'USD';
+  };
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const profile = await api.get('/users/profile');
+        // Ensure profile data updates formData correctly
+        setUserProfile(profile);
+        setFormData(prev => ({ 
+            ...prev, 
+            country: profile.country || 'United States', // Use profile country or default
+            province: profile.province || provinces[profile.country || 'United States'][0] || '', // Use profile province or default
+            currency: profile.country === 'Canada' ? 'CAD' : 'USD' // Set currency based on profile country
+        }));
+      } catch (error) {
+        console.error('Failed to fetch user profile', error);
+      }
+    };
+    fetchProfileData();
+  }, []);
+
+  useEffect(() => {
+    const fetchCatalogData = async () => {
+      try {
+        const catalogData = await api.get('/catalog');
+        setCatalog(catalogData);
+      } catch (error) {
+        console.error('Failed to fetch catalog data');
+      }
+    };
+    fetchCatalogData();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    let newData = { ...formData, [name]: value };
-
-    if (name === 'country') {
-      newData.currency = value === 'Canada' ? 'CAD' : 'USD';
-      // Reset province when country changes
-      newData.province = provinces[value as keyof typeof provinces][0] || ''; 
-    }
     
-    setFormData(newData);
+    setFormData(prevData => {
+      const updatedData = { ...prevData, [name]: value };
+
+      if (name === 'country') {
+        updatedData.currency = getCurrencyForCountry(value);
+        // Update province based on selected country, ensure it's a valid option
+        updatedData.province = provinces[value as keyof typeof provinces]?.[0] || ''; 
+      }
+      return updatedData;
+    });
+  };
+
+  const setVisibility = (value: string) => {
+    setFormData({ ...formData, visibility: value });
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +119,8 @@ const CreateCampaign: React.FC = () => {
     files.forEach(file => uploadData.append('images', file));
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api'; // Use env variable
+      // Use env variable for API URL
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api'; 
       const response = await fetch(`${apiUrl}/upload`, {
         method: 'POST',
         headers: {
@@ -68,6 +138,42 @@ const CreateCampaign: React.FC = () => {
       console.error('Image upload error:', error);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const toggleItem = (item: CatalogItem) => {
+    const exists = selectedItems.find(i => i.catalogItemId === item.id);
+    if (exists) {
+      setSelectedItems(selectedItems.filter(i => i.catalogItemId !== item.id));
+    } else {
+      setSelectedItems([...selectedItems, { catalogItemId: item.id, quantityRequested: 1, name: item.name, price: item.price }]);
+    }
+  };
+
+  const updateQuantity = (itemId: string, delta: number) => {
+    setSelectedItems(selectedItems.map(i => 
+      i.catalogItemId === itemId ? { ...i, quantityRequested: Math.max(1, i.quantityRequested + delta) } : i
+    ));
+  };
+
+  const handleNextStep = () => {
+    if (step === 2 && !userProfile?.deliveryAddress) {
+      setShowAddressPrompt(true);
+    } else {
+      setStep(step + 1);
+    }
+  };
+
+  const handleSaveAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const updated = await api.put('/users/profile', { deliveryAddress: tempAddress });
+      setUserProfile(updated);
+      setShowAddressPrompt(false);
+      setStep(3);
+    } catch (error) {
+      alert('Failed to save address');
+      console.error('Failed to save address', error);
     }
   };
 
@@ -91,6 +197,17 @@ const CreateCampaign: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const filteredCatalog = catalog.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        item.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Filter by country based on user's profile country
+    // This assumes userProfile.country is available and correct
+    const countryMatch = userProfile?.country ? item.country === userProfile.country : true; 
+
+    return matchesSearch && countryMatch;
+  });
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -130,7 +247,7 @@ const CreateCampaign: React.FC = () => {
           </div>
 
           {/* Campaign Goal and Currency */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold mb-2 text-gray-900">Fundraising Goal</label>
               <div className="relative">
