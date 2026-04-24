@@ -38,6 +38,7 @@ async function handleDonationSuccess(donationId: string, sessionId: string) {
   try {
     const donation = await prisma.donation.findUnique({ where: { id: donationId } });
     if (!donation || donation.paymentStatus === PaymentStatus.SUCCESSFUL) return;
+    if (!donation.eventId) return; // Skip if no event linked
 
     await prisma.$transaction(async (tx) => {
       await tx.donation.update({
