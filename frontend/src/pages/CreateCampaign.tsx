@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Calendar, ArrowRight, Plus, Upload, Loader2, ShieldCheck, HandHeart, MapPin, Search, X, Image as ImageIcon } from 'lucide-react'; // Removed unused 'X' if not used, or ensure it's imported if needed
+// Removed unused import 'X' if not used. Keeping other icons.
+import { Calendar, ArrowRight, Plus, Upload, Loader2, ShieldCheck, HandHeart, MapPin, Search, Image as ImageIcon } from 'lucide-react'; 
 
 interface CatalogItem {
   id: string;
@@ -11,7 +12,7 @@ interface CatalogItem {
   price: number;
   currency: string;
   imageUrls: string[] | string;
-  country: string; // Ensure country is part of the item interface if used here
+  country: string; 
 }
 
 interface SelectedItem {
@@ -21,9 +22,22 @@ interface SelectedItem {
   price: number;
 }
 
-const CreateEvent: React.FC = () => {
+// Define the type for formData for better type safety
+interface CampaignFormData {
+  title: string;
+  description: string;
+  eventType: string;
+  eventDate: string;
+  donationGoal: string;
+  currency: string;
+  visibility: string;
+  country: string;
+  province: string;
+}
+
+const CreateCampaign: React.FC = () => {
   const navigate = useNavigate();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -31,15 +45,15 @@ const CreateEvent: React.FC = () => {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [userProfile, setUserProfile] = useState<any>(null); // Should ideally be typed UserProfile
+  const [userProfile, setUserProfile] = useState<any>(null); 
   const [showAddressPrompt, setShowAddressPrompt] = useState(false);
   const [tempAddress, setTempAddress] = useState('');
 
-  // Define initial state more explicitly for clarity
-  const initialFormData = {
+  // Explicitly define initial state with correct types
+  const initialFormData: CampaignFormData = {
     title: '',
     description: '',
-    eventType: 'Wedding',
+    eventType: 'Wedding', // Default value, might be changed if creating campaign specific
     eventDate: '',
     donationGoal: '',
     currency: 'USD',
@@ -47,10 +61,10 @@ const CreateEvent: React.FC = () => {
     country: 'United States', // Default value
     province: 'Alabama',     // Default value for US
   };
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState<CampaignFormData>(initialFormData);
 
   const countries = ["United States", "Canada"];
-  const provinces: { [key: string]: string[] } = { // Explicitly typing provinces object
+  const provinces: { [key: string]: string[] } = {
     "United States": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"],
     "Canada": ["Alberta", "British Columbia", "Manitoba", "New Brunswick", "Newfoundland and Labrador", "Nova Scotia", "Ontario", "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories", "Nunavut", "Yukon"]
   };
@@ -64,13 +78,13 @@ const CreateEvent: React.FC = () => {
     const fetchProfileData = async () => {
       try {
         const profile = await api.get('/users/profile');
-        // Ensure profile data updates formData correctly
         setUserProfile(profile);
+        // Update form state based on fetched profile data
         setFormData(prev => ({ 
             ...prev, 
-            country: profile.country || 'United States', // Use profile country or default
-            province: profile.province || provinces[profile.country || 'United States'][0] || '', // Use profile province or default
-            currency: profile.country === 'Canada' ? 'CAD' : 'USD' // Set currency based on profile country
+            country: profile.country || 'United States',
+            province: profile.province || provinces[profile.country || 'United States']?.[0] || '', 
+            currency: profile.country === 'Canada' ? 'CAD' : 'USD'
         }));
       } catch (error) {
         console.error('Failed to fetch user profile', error);
@@ -99,7 +113,6 @@ const CreateEvent: React.FC = () => {
 
       if (name === 'country') {
         updatedData.currency = getCurrencyForCountry(value);
-        // Update province based on selected country, ensure it's a valid option
         updatedData.province = provinces[value as keyof typeof provinces]?.[0] || ''; 
       }
       return updatedData;
@@ -119,8 +132,7 @@ const CreateEvent: React.FC = () => {
     files.forEach(file => uploadData.append('images', file));
 
     try {
-      // Use env variable for API URL
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api'; 
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8001/api';
       const response = await fetch(`${apiUrl}/upload`, {
         method: 'POST',
         headers: {
@@ -146,7 +158,8 @@ const CreateEvent: React.FC = () => {
     if (exists) {
       setSelectedItems(selectedItems.filter(i => i.catalogItemId !== item.id));
     } else {
-      setSelectedItems([...selectedItems, { catalogItemId: item.id, quantityRequested: 1, name: item.name, price: item.price }]);
+      // Ensure price is treated as a number, and handle potential parsing issues if necessary
+      setSelectedItems([...selectedItems, { catalogItemId: item.id, quantityRequested: 1, name: item.name, price: typeof item.price === 'string' ? parseFloat(item.price) : item.price }]);
     }
   };
 
@@ -186,7 +199,7 @@ const CreateEvent: React.FC = () => {
       await api.post('/campaigns', {
         ...formData,
         campaignGoal: parseFloat(formData.campaignGoal),
-        organizationId: organizationId, // Ensure organizationId is sent
+        organizationId: organizationId, 
       });
       navigate('/dashboard'); // Redirect to dashboard after success
       alert('Campaign created successfully!');
@@ -203,7 +216,6 @@ const CreateEvent: React.FC = () => {
                         item.category.toLowerCase().includes(searchTerm.toLowerCase());
     
     // Filter by country based on user's profile country
-    // This assumes userProfile.country is available and correct
     const countryMatch = userProfile?.country ? item.country === userProfile.country : true; 
 
     return matchesSearch && countryMatch;
@@ -247,7 +259,7 @@ const CreateEvent: React.FC = () => {
           </div>
 
           {/* Campaign Goal and Currency */}
-          <div className="grid grid-cols-1 sm:grid-grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-bold mb-2 text-gray-900">Fundraising Goal</label>
               <div className="relative">
@@ -258,7 +270,7 @@ const CreateEvent: React.FC = () => {
                   required
                   className="w-full rounded-xl border-border bg-muted/20 pl-10 pr-4 py-3 focus:ring-primary font-bold placeholder-shown:text-muted-foreground"
                   placeholder="e.g. 10000.00"
-                  value={formData.campaignGoal}
+                  value={formData.donationGoal}
                   onChange={handleChange}
                 />
               </div>
