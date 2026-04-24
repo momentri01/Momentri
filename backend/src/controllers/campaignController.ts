@@ -135,6 +135,7 @@ export const getCampaignById = async (req: AuthRequest, res: Response) => {
                 id: true,
                 donorName: true,
                 donorEmail: true,
+                grossAmount: true,
                 netAmount: true, // Corrected from 'amount' to 'netAmount' as per schema
                 currency: true,
                 paymentStatus: true,
