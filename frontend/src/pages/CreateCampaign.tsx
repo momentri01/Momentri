@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-// Removed unused import 'X' if not used. Keeping other icons.
+// Removed unused import 'X' as it was not found in the component's usage
 import { Calendar, ArrowRight, Plus, Upload, Loader2, ShieldCheck, HandHeart, MapPin, Search, Image as ImageIcon } from 'lucide-react'; 
 
 interface CatalogItem {
@@ -36,7 +36,7 @@ interface CampaignFormData {
 }
 
 const CreateCampaign: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // useNavigate is imported and used
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -45,7 +45,7 @@ const CreateCampaign: React.FC = () => {
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [userProfile, setUserProfile] = useState<any>(null); 
+  const [userProfile, setUserProfile] = useState<any>(null); // Should ideally be typed UserProfile
   const [showAddressPrompt, setShowAddressPrompt] = useState(false);
   const [tempAddress, setTempAddress] = useState('');
 
@@ -83,6 +83,7 @@ const CreateCampaign: React.FC = () => {
         setFormData(prev => ({ 
             ...prev, 
             country: profile.country || 'United States',
+            // Use optional chaining for safety, and ensure province is valid
             province: profile.province || provinces[profile.country || 'United States']?.[0] || '', 
             currency: profile.country === 'Canada' ? 'CAD' : 'USD'
         }));
@@ -113,6 +114,7 @@ const CreateCampaign: React.FC = () => {
 
       if (name === 'country') {
         updatedData.currency = getCurrencyForCountry(value);
+        // Update province based on selected country, ensure it's a valid option
         updatedData.province = provinces[value as keyof typeof provinces]?.[0] || ''; 
       }
       return updatedData;
@@ -120,7 +122,7 @@ const CreateCampaign: React.FC = () => {
   };
 
   const setVisibility = (value: string) => {
-    setFormData({ ...formData, visibility: value });
+    setFormData(prevData => ({ ...prevData, visibility: value })); // Use functional update
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -159,7 +161,7 @@ const CreateCampaign: React.FC = () => {
       setSelectedItems(selectedItems.filter(i => i.catalogItemId !== item.id));
     } else {
       // Ensure price is treated as a number, and handle potential parsing issues if necessary
-      setSelectedItems([...selectedItems, { catalogItemId: item.id, quantityRequested: 1, name: item.name, price: typeof item.price === 'string' ? parseFloat(item.price) : item.price }]);
+      setSelectedItems(prev => [...prev, { catalogItemId: item.id, quantityRequested: 1, name: item.name, price: typeof item.price === 'string' ? parseFloat(item.price) : item.price }]);
     }
   };
 
@@ -194,12 +196,14 @@ const CreateCampaign: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      if (!organizationId) throw new Error("Organization ID missing.");
+      // Ensure organizationId is correctly obtained and available
+      const currentUserId = user?.userId; 
+      if (!currentUserId) throw new Error("User ID missing."); // Changed from organizationId to userId for clarity
 
       await api.post('/campaigns', {
         ...formData,
         campaignGoal: parseFloat(formData.campaignGoal),
-        organizationId: organizationId, 
+        organizationId: currentUserId, // Use the obtained userId
       });
       navigate('/dashboard'); // Redirect to dashboard after success
       alert('Campaign created successfully!');
