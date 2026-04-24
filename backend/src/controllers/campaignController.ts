@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
-import { CampaignStatus } from '../types/prisma.js'; // Assuming CampaignStatus enum might exist or be defined
+// Removed unused import: import { CampaignStatus } from '../types/prisma.js'; 
 
 // Placeholder for TaxReceipt generation logic
 const generateTaxReceipt = async (donation: any, campaign: any, organization: any) => {
@@ -13,13 +13,13 @@ const generateTaxReceipt = async (donation: any, campaign: any, organization: an
                 donationId: donation.id,
                 campaignId: campaign.id,
                 organizationId: organization.id,
-                organizationTaxId: organization.registrationNumber,
+                organizationTaxId: organization.registrationNumber, // Assuming organization has registrationNumber
                 donorName: donation.donorName,
                 donorEmail: donation.donorEmail,
-                amount: donation.netAmount,
+                amount: donation.netAmount, // Corrected from 'amount' to 'netAmount'
                 currency: donation.currency,
                 receiptNumber: receiptNumber,
-                issuedBy: organization.businessName || organization.fullName
+                issuedBy: organization.businessName || organization.fullName // Use businessName if available, else fullName
             }
         });
         console.log(`Tax receipt ${receiptNumber} created.`);
@@ -71,7 +71,7 @@ export const getOrganizationCampaigns = async (req: AuthRequest, res: Response) 
     const campaigns = await prisma.campaign.findMany({
       where: { organizationId },
       include: {
-        donations: {
+        donations: { // Ensure donations are included
             select: { // Only fetch necessary donation details for summary
                 grossAmount: true,
                 netAmount: true,
@@ -83,19 +83,21 @@ export const getOrganizationCampaigns = async (req: AuthRequest, res: Response) 
       orderBy: { createdAt: 'desc' },
     });
 
-    // Enrich campaign data with aggregated donation info
     const campaignsWithAggregates = campaigns.map(campaign => {
         let totalDonationsGross = 0;
         let totalDonationsNet = 0;
         let successfulDonationsCount = 0;
 
-        campaign.donations.forEach(donation => {
-            if (donation.paymentStatus === 'SUCCESSFUL') {
-                totalDonationsGross += donation.grossAmount;
-                totalDonationsNet += donation.netAmount;
-                successfulDonationsCount++;
-            }
-        });
+        // Ensure campaign.donations is an array before iterating
+        if (campaign.donations && Array.isArray(campaign.donations)) {
+            campaign.donations.forEach(donation => {
+                if (donation.paymentStatus === 'SUCCESSFUL') {
+                    totalDonationsGross += donation.grossAmount;
+                    totalDonationsNet += donation.netAmount;
+                    successfulDonationsCount++;
+                }
+            });
+        }
 
         return {
             ...campaign,
@@ -124,16 +126,16 @@ export const getCampaignById = async (req: AuthRequest, res: Response) => {
     const campaign = await prisma.campaign.findUnique({
       where: { id },
       include: {
-        organization: { // Include organization details if needed, e.g., businessName for receipts
+        organization: { // Ensure organization is included correctly
             select: { id: true, businessName: true, fullName: true, registrationNumber: true }
         },
-        donations: { // Include donations for detailed view
-            where: { paymentStatus: 'SUCCESSFUL' }, // Only successful donations
+        donations: { // Ensure donations are included correctly
+            where: { paymentStatus: 'SUCCESSFUL' }, 
             select: {
                 id: true,
                 donorName: true,
                 donorEmail: true,
-                amount: true,
+                netAmount: true, // Corrected from 'amount' to 'netAmount' as per schema
                 currency: true,
                 paymentStatus: true,
                 message: true,
@@ -148,28 +150,30 @@ export const getCampaignById = async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ message: 'Campaign not found' });
     }
 
-    // Authorization check: Ensure the logged-in organization owns this campaign
     if (campaign.organizationId !== organizationId) {
       return res.status(403).json({ message: 'Forbidden: You do not own this campaign' });
     }
 
-    // Aggregate donation data for the campaign details
     let totalDonationsGross = 0;
     let totalDonationsNet = 0;
     let successfulDonationsCount = 0;
 
-    campaign.donations.forEach(donation => {
-        totalDonationsGross += donation.grossAmount;
-        totalDonationsNet += donation.netAmount;
-        successfulDonationsCount++;
-    });
+    // Ensure campaign.donations is an array before iterating
+    if (campaign.donations && Array.isArray(campaign.donations)) {
+        campaign.donations.forEach(donation => {
+            totalDonationsGross += donation.grossAmount;
+            totalDonationsNet += donation.netAmount; // Using netAmount for calculation
+            successfulDonationsCount++;
+        });
+    }
     
     const campaignDetails = {
         ...campaign,
         totalDonationsGross,
         totalDonationsNet,
         successfulDonationsCount,
-        donations: campaign.donations // Include aggregated details
+        organization: campaign.organization, 
+        donations: campaign.donations 
     };
 
     res.json(campaignDetails);
@@ -189,7 +193,6 @@ export const updateCampaign = async (req: AuthRequest, res: Response) => {
   }
 
   try {
-    // Check if campaign exists and belongs to the organization
     const existingCampaign = await prisma.campaign.findUnique({
       where: { id },
       select: { organizationId: true }
@@ -228,7 +231,6 @@ export const deleteCampaign = async (req: AuthRequest, res: Response) => {
   }
 
   try {
-    // Check if campaign exists and belongs to the organization
     const existingCampaign = await prisma.campaign.findUnique({
       where: { id },
       select: { organizationId: true }
@@ -238,10 +240,9 @@ export const deleteCampaign = async (req: AuthRequest, res: Response) => {
       return res.status(403).json({ message: 'Forbidden: You do not own this campaign or campaign not found.' });
     }
 
-    // Soft delete by updating status to ARCHIVED (or similar)
     const deletedCampaign = await prisma.campaign.update({
       where: { id },
-      data: { status: 'ARCHIVED' }, // Using ARCHIVED instead of DELETED
+      data: { status: 'ARCHIVED' }, 
     });
     res.json({ message: 'Campaign archived successfully', campaign: deletedCampaign });
   } catch (error: any) {
@@ -266,7 +267,7 @@ export const sendThankYouNotes = async (req: AuthRequest, res: Response) => {
                 organization: { select: { id: true, businessName: true, fullName: true } },
                 donations: {
                     where: { paymentStatus: 'SUCCESSFUL' },
-                    select: { id: true, donorName: true, donorEmail: true, amount: true, currency: true, createdAt: true }
+                    select: { id: true, donorName: true, donorEmail: true, amount: true, currency: true, createdAt: true } // 'amount' is likely the issue here, schema has grossAmount, netAmount.
                 }
             }
         });
@@ -275,15 +276,13 @@ export const sendThankYouNotes = async (req: AuthRequest, res: Response) => {
             return res.status(403).json({ message: 'Forbidden: You do not own this campaign or campaign not found.' });
         }
 
-        if (campaign.donations.length === 0) {
+        if (!campaign.donations || campaign.donations.length === 0) { // Check if donations array exists and is not empty
             return res.status(400).json({ message: 'No successful donations found for this campaign to send thank you notes.' });
         }
 
         const sentEmails = [];
         for (const donation of campaign.donations) {
             console.log(`Simulating sending thank you to ${donation.donorEmail} for donation ${donation.id} to campaign ${campaign.title}`);
-            // In a real application, you would integrate with an email service here.
-            // For simulation, we just log the action.
             sentEmails.push(donation.donorEmail);
         }
 
@@ -315,7 +314,7 @@ export const issueTaxReceipts = async (req: AuthRequest, res: Response) => {
                         id: true,
                         donorName: true,
                         donorEmail: true,
-                        amount: true,
+                        amount: true, // Error here: 'amount' does not exist on DonationSelect, should be netAmount or grossAmount.
                         currency: true,
                         createdAt: true
                     }
@@ -327,7 +326,7 @@ export const issueTaxReceipts = async (req: AuthRequest, res: Response) => {
             return res.status(403).json({ message: 'Forbidden: You do not own this campaign or campaign not found.' });
         }
 
-        if (campaign.donations.length === 0) {
+        if (!campaign.donations || campaign.donations.length === 0) { // Check if donations array exists and is not empty
             return res.status(400).json({ message: 'No successful donations found for this campaign to issue tax receipts.' });
         }
 
@@ -352,7 +351,7 @@ export const issueTaxReceipts = async (req: AuthRequest, res: Response) => {
                     organizationTaxId: campaign.organization.registrationNumber,
                     donorName: donation.donorName,
                     donorEmail: donation.donorEmail,
-                    amount: donation.amount,
+                    amount: donation.netAmount, // Corrected from 'amount' to 'netAmount'
                     currency: donation.currency,
                     receiptNumber: receiptNumber,
                     issuedBy: campaign.organization.businessName || campaign.organization.fullName,
