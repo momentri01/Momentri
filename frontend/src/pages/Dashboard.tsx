@@ -101,12 +101,14 @@ const Dashboard: React.FC = () => {
   const totalCampaignsRaised = campaigns.reduce((acc, campaign) => acc + Number(campaign.totalDonationsNet), 0);
 
   // Helper function to determine status class for badges
-  const getStatusClass = (status?: string) => {
+  const getStatusClass = (status?: string): string => { // Explicitly typed return
     switch (status) {
       case 'ACTIVE':
         return 'bg-green-500';
       case 'COMPLETED':
         return 'bg-blue-500';
+      case 'ARCHIVED': // Assuming ARCHIVED status from backend
+        return 'bg-red-500';
       default:
         return 'bg-gray-400';
     }
@@ -253,7 +255,8 @@ const Dashboard: React.FC = () => {
              </div>
              <div className="bg-white p-6 rounded-2xl border shadow-sm">
                 <p className="text-sm font-medium text-muted-foreground mb-1">Successful Campaigns</p>
-                <p className="text-2xl font-bold">{events.filter(e => Number(e.totalDonationsNet) >= Number(e.donationGoal)).length}</p> {/* This stat might be misleading for individuals */}
+                {/* This stat might be misleading for individuals. It's currently showing event success based on goal */}
+                <p className="text-2xl font-bold">{events.filter(e => Number(e.totalDonationsNet) >= Number(e.donationGoal)).length}</p> 
              </div>
              {/* Payout Status Card - likely for organizations, but might be hidden or irrelevant for individuals */}
              {profile?.stripeAccountId && (
