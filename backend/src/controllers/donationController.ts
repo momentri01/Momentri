@@ -92,9 +92,14 @@ export const markDonationAsSuccessful = async (req: Request, res: Response) => {
             data: { paymentStatus: PaymentStatus.SUCCESSFUL }
         });
 
+        if (!donation.eventId) {
+            return res.json({ message: 'Donation successful (no event linked)', donation });
+        }
+        const eventId = donation.eventId; // Extract to local const for TypeScript narrowing
+
         // Update event totals
         await prisma.event.update({
-            where: { id: donation.eventId },
+            where: { id: eventId },
             data: {
                 totalDonationsGross: { increment: donation.grossAmount },
                 totalPlatformFees: { increment: donation.platformFee },
