@@ -115,7 +115,7 @@ export const getOrganizationCampaigns = async (req: AuthRequest, res: Response) 
 };
 
 export const getCampaignById = async (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const organizationId = req.user?.userId; // Ensure it's an organization managing this campaign
 
   if (!organizationId) {
@@ -184,7 +184,7 @@ export const getCampaignById = async (req: AuthRequest, res: Response) => {
 };
 
 export const updateCampaign = async (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const organizationId = req.user?.userId;
   const { title, description, campaignGoal, currency, startDate, endDate, status, coverImageUrl } = req.body;
 
@@ -223,7 +223,7 @@ export const updateCampaign = async (req: AuthRequest, res: Response) => {
 };
 
 export const deleteCampaign = async (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
+  const id = req.params.id as string;
   const organizationId = req.user?.userId;
 
   if (!organizationId) {
@@ -253,7 +253,7 @@ export const deleteCampaign = async (req: AuthRequest, res: Response) => {
 
 // Endpoint for sending thank you notes
 export const sendThankYouNotes = async (req: AuthRequest, res: Response) => {
-    const { campaignId } = req.params;
+    const campaignId = req.params.campaignId as string;
     const organizationId = req.user?.userId;
 
     if (!organizationId) {
@@ -296,7 +296,7 @@ export const sendThankYouNotes = async (req: AuthRequest, res: Response) => {
 
 // Endpoint for issuing tax receipts
 export const issueTaxReceipts = async (req: AuthRequest, res: Response) => {
-    const { campaignId } = req.params;
+    const campaignId = req.params.campaignId as string;
     const organizationId = req.user?.userId;
 
     if (!organizationId) {
