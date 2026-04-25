@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Rocket, Shield, HandHeart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
+import { Rocket, Shield, HandHeart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   const [stats, setStats] = useState({
@@ -14,15 +14,15 @@ const LandingPage: React.FC = () => {
   const [activePhrase, setActivePhrase] = useState(0);
   const mockCampaigns = [
     { title: "The Thompson Wedding", raised: 8450, goal: 10000, img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb15d4c2?auto=format&fit=crop&q=80&w=1200" },
     { title: "Sarah's Medical Fund", raised: 12500, goal: 15000, img: "https://images.unsplash.com/photo-1579684385127-1ecd15d5b8bd?auto=format&fit=crop&q=80&w=1200" },
     { title: "Local School Library", raised: 5200, goal: 7500, img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Animal Shelter Rescue", raised: 3800, goal: 5000, img: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Tech for Kids Workshop", raised: 9100, goal: 10000, img: "https://images.unsplash.com/photo-1503676260728-1c09da0947fe?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Ocean Cleanup Initiative", raised: 18000, goal: 20000, img: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Youth Sports Equipment", raised: 1500, goal: 2500, img: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Park Renovation", raised: 7800, goal: 9000, img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Animal Shelter Rescue", raised: 3800, goal: 5000, img: "https://images.unsplash.com/photo-154819997303d6c6a58c0f?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Tech for Kids Workshop", raised: 9100, goal: 10000, img: "https://images.unsplash.com/photo-1503676260728-a1c7d51611b?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Ocean Cleanup Initiative", raised: 18000, goal: 20000, img: "https://images.unsplash.com/photo-1621451537084-a878a870f80?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Youth Sports Equipment", raised: 1500, goal: 2500, img: "https://images.unsplash.com/photo-1461896836934-aef1dfb15d4c2?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.com/photo-1511379938547-a1c7d51611b?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Park Renovation", raised: 7800, goal: 9000, img: "https://images.unsplash.com/photo-1441974231531-a6c1d51611b?auto=format&fit=crop&q=80&w=1200" },
   ];
 
   const phrases = ["what matters.", "your dreams.", "your community.", "every milestone.", "urgent causes."];
@@ -114,14 +114,14 @@ const LandingPage: React.FC = () => {
                 <div className="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-lg">
                    <div className="flex justify-between items-end mb-3">
                       <div>
-                         <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Live Campaign</p>
+                         <p className="text-[10px] font-bold uppercase tracking-widest text-primary mb-1">Live Campaign</p>
                          <p className="font-bold text-gray-900">{currentCampaign.title}</p>
                       </div>
                       <p className="font-black text-primary">${currentCampaign.raised.toLocaleString()} raised</p>
                    </div>
                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-primary rounded-full transition-all duration-500" 
+                        className="bg-primary h-2 rounded-full transition-all duration-500" 
                         style={{ width: `${(currentCampaign.raised / currentCampaign.goal) * 100}%` }}
                       />
                    </div>
@@ -134,7 +134,7 @@ const LandingPage: React.FC = () => {
                        <HandHeart size={20} fill="currentColor" />
                     </div>
                     <div>
-                       <p className="text-[10px] font-bold text-gray-400 uppercase">New Donation</p>
+                       <p className="text-[10px] font-black text-gray-400 uppercase">New Donation</p>
                        <p className="text-xs font-black">+$250.00</p>
                     </div>
                  </div>
@@ -158,108 +158,70 @@ const LandingPage: React.FC = () => {
          </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="bg-white py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div className="p-8 rounded-[2rem] bg-gray-50 border transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                 <Globe size={32} />
-              </div>
-              <p className="text-4xl font-black text-gray-900 mb-2">${stats.totalRaised.toLocaleString()}</p>
-              <p className="text-muted-foreground font-bold uppercase text-[10px] tracking-widest">Total Funds Raised</p>
-            </div>
-            <div className="p-8 rounded-[2rem] bg-gray-50 border transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-6">
-                 <Users size={32} />
-              </div>
-              <p className="text-4xl font-black text-gray-900 mb-2">{stats.activeSupporters.toLocaleString()}</p>
-              <p className="text-muted-foreground font-bold uppercase text-[10px] tracking-widest">Active Supporters</p>
-            </div>
-            <div className="p-8 rounded-[2rem] bg-gray-50 border transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                 <Star size={32} />
-              </div>
-              <p className="text-4xl font-black text-gray-900 mb-2">{stats.activeEvents.toLocaleString()}</p>
-              <p className="text-muted-foreground font-bold uppercase text-[10px] tracking-widest">Active Events</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Feature Section with Images */}
       <section className="py-24 overflow-hidden">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-20">
-               <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4">One platform, endless possibilities</h2>
-               <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">Simple tools built for transparency, speed, and beautiful design.</p>
+            <div className="lg:grid lg:grid-cols-2 lg:gap-32 items-center mb-32">
+               <div>
+                  <div className="inline-flex items-center gap-2 text-primary font-black uppercase text-xs tracking-[0.2em] mb-8">
+                     <Zap size={20} fill="currentColor" />
+                    Powerful Integration
+                  </div>
+                  <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-10 leading-tight tracking-tight">One platform, endless possibilities</h2>
+                  <p className="text-lg text-muted-foreground mb-8 font-medium">
+                     Simple tools built for transparency, speed, and beautiful design.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                     <div className="p-6 bg-white rounded-3xl border shadow-sm">
+                        <CheckCircle2 className="text-green-500 mb-4" size={24} />
+                        <p className="font-black text-gray-900 mb-2">Direct Donations</p>
+                        <p className="text-sm text-gray-600 font-medium">Effortlessly collect funds for any cause.</p>
+                     </div>
+                     <div className="p-6 bg-white rounded-3xl border shadow-sm">
+                        <Gift className="text-blue-500 mb-4" size={24} />
+                        <p className="font-black text-gray-900 mb-2">Gift Registries</p>
+                        <p className="text-sm text-gray-600 font-medium">Curate wishlists for milestones and events.</p>
+                     </div>
+                  </div>
+               </div>
+               <div className="relative mt-20 lg:mt-0">
+                  <div className="rounded-[4rem] overflow-hidden shadow-3xl rotate-2 hover:rotate-0 transition-transform duration-700">
+                     <img 
+                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200" 
+                        alt="Happy couple celebrating" 
+                        className="w-full aspect-[4/5] object-cover scale-110 hover:scale-100 transition-transform duration-700"
+                     />
+                  </div>
+               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center mb-32">
-               <div>
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-6">
-                     <Gift size={24} />
+            <div className="lg:grid lg:grid-cols-2 lg:gap-32 items-center mt-32">
+               <div className="order-2 lg:order-1 relative">
+                  <div className="rounded-[4rem] overflow-hidden shadow-3xl -rotate-2 hover:rotate-0 transition-transform duration-700">
+                     <img 
+                        src="https://images.unsplash.com/photo-1532629345422-a1c7d51611b?auto=format&fit=crop&q=80&w=800" 
+                        alt="Team collaborating" 
+                        className="w-full aspect-[4/5] object-cover scale-110 hover:scale-100 transition-transform duration-700"
+                     />
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-6 text-balance">The ultimate gift registry for life's biggest milestones</h3>
-                  <p className="text-lg text-muted-foreground mb-8">
-                     Instead of just asking for cash, curate a beautiful list of items your supporters can purchase. 
-                     We handle the fulfillment, you focus on the celebration.
+               </div>
+               <div className="order-1 lg:order-2">
+                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
+                     <Users size={24} />
+                  </div>
+                  <h3 className="text-3xl font-bold text-gray-900 mb-6">Community-driven fundraising</h3>
+                  <p className="text-lg text-muted-foreground mb-8 font-medium">
+                     Empower your community to rally around causes they care about. With tools for sharing and updates, keep everyone engaged.
                   </p>
                   <ul className="space-y-4">
-                     {['Curated product catalog', 'Instant order notifications', 'Secure admin fulfillment', 'Privacy-first delivery addresses'].map(item => (
+                     {['Seamless sharing tools', 'Real-time progress updates', 'Donor engagement features', 'Transparent fund distribution'].map(item => (
                         <li key={item} className="flex items-center gap-3 font-bold text-gray-700">
                            <CheckCircle2 className="text-green-500" size={20} />
                            {item}
                         </li>
                      ))}
                   </ul>
-               </div>
-               <div className="relative">
-                  <div className="rounded-[3rem] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
-                     <img 
-                        src="/mom-to-be-registry.png" 
-                        alt="Joyful mom-to-be opening gifts" 
-                        className="w-full h-full object-cover"
-                     />
-                  </div>
-                  <div className="absolute -bottom-8 -left-8 bg-white p-6 rounded-3xl shadow-xl border max-w-[200px]">
-                     <div className="flex items-center gap-2 mb-2">
-                        <Star className="text-yellow-400" size={16} fill="currentColor" />
-                        <span className="font-black text-sm">4.9/5</span>
-                     </div>
-                     <p className="text-xs text-muted-foreground font-bold italic">"Easiest registry I've ever used!"</p>
-                  </div>
-               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-               <div className="order-2 md:order-1">
-                  <div className="rounded-[3rem] overflow-hidden shadow-2xl -rotate-2 hover:rotate-0 transition-transform duration-500">
-                     <img 
-                        src="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?auto=format&fit=crop&q=80&w=800" 
-                        alt="Charity support" 
-                        className="w-full h-full object-cover"
-                     />
-                  </div>
-               </div>
-               <div className="order-1 md:order-2">
-                  <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-                     <HandHeart size={24} />
-                  </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-6">Direct impact through simple donations</h3>
-                  <p className="text-lg text-muted-foreground mb-8">
-                     Collect funds for emergencies, memorials, or community projects. 
-                     Our low-fee structure ensures more money goes where it's needed most.
-                  </p>
-                  <div className="p-6 bg-gray-50 rounded-[2rem] border border-dashed border-gray-300">
-                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm text-primary font-black">QR</div>
-                        <div>
-                           <p className="text-sm font-black">Scan to Donate</p>
-                           <p className="text-xs text-muted-foreground">Every event gets a custom QR code instantly.</p>
-                        </div>
-                     </div>
-                  </div>
                </div>
             </div>
          </div>
@@ -273,9 +235,9 @@ const LandingPage: React.FC = () => {
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]" />
             
             <div className="relative z-10 max-w-3xl mx-auto">
-               <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tight leading-tight">Ready to amplify your organization's impact?</h2>
+               <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tight leading-tight">Ready to start your <br /> next campaign?</h2>
                <p className="text-xl text-slate-400 mb-14 font-medium leading-relaxed">
-                 Join the growing number of organizations using Momentris to create meaningful change.
+                 Join thousands of organizers who use Momentris to fund weddings, baby showers, and community causes.
                </p>
                <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link
@@ -292,33 +254,6 @@ const LandingPage: React.FC = () => {
                     Contact Us
                   </Link>
                </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
-};
-      <section className="py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gray-900 rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden">
-            {/* Background elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[100px]" />
-            
-            <div className="relative z-10">
-               <h2 className="text-4xl md:text-6xl font-black text-white mb-8 tracking-tight">Ready to start your <br /> next campaign?</h2>
-               <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto font-medium">
-                 Join thousands of organizers who use Momentris to fund weddings, baby showers, and community causes.
-               </p>
-               <Link
-                 to="/register"
-                 className="inline-flex items-center justify-center rounded-full bg-white px-12 py-6 text-xl font-bold text-primary shadow-2xl transition-all hover:bg-gray-50 hover:scale-105 active:scale-95"
-               >
-                 Launch Your Event Now
-                 <Rocket className="ml-2 h-6 w-6" />
-               </Link>
-               <p className="mt-8 text-sm text-gray-500 font-bold">No credit card required. Launch in minutes.</p>
             </div>
           </div>
         </div>
