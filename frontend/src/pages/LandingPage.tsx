@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { Rocket, Shield, HandHeart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe } from 'lucide-react';
+import { Rocket, Shield, HandHeart, Gift, ArrowRight, CheckCircle2, Users, Star, Zap, Globe, Calendar, Target, Settings, Eye, CreditCard, AlertCircle, ShieldAlert, Plus, X, Search, Image as ImageIcon } from 'lucide-react';
 
 const LandingPage: React.FC = () => {
   const [stats, setStats] = useState({
@@ -18,10 +18,10 @@ const LandingPage: React.FC = () => {
     { title: "Sarah's Medical Fund", raised: 12500, goal: 15000, img: "https://images.unsplash.com/photo-1579684385127-1ecd15d5b8bd?auto=format&fit=crop&q=80&w=1200" },
     { title: "Local School Library", raised: 5200, goal: 7500, img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1200" },
     { title: "Animal Shelter Rescue", raised: 3800, goal: 5000, img: "https://images.unsplash.com/photo-154819997303d6c6a58c0f?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Tech for Kids Workshop", raised: 9100, goal: 10000, img: "https://images.unsplash.com/photo-1503676260728-a1c7d51611b?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Tech for Kids Workshop", raised: 9100, goal: 10000, img: "https://images.unsplash.com/photo-1503676260728-a1c7d51611b?auto=format&fit=crop&q=80&w=1100" },
     { title: "Ocean Cleanup Initiative", raised: 18000, goal: 20000, img: "https://images.unsplash.com/photo-1621451537084-a878a870f80?auto=format&fit=crop&q=80&w=1200" },
     { title: "Youth Sports Equipment", raised: 1500, goal: 2500, img: "https://images.unsplash.com/photo-1461896836934-aef1dfb15d4c2?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.com/photo-1511379938547-a1c7d51611b?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Music Lessons for All", raised: 4200, goal: 6000, img: "https://images.unsplash.1511379938547-a1c7d51611b?auto=format&fit=crop&q=80&w=1200" },
     { title: "Park Renovation", raised: 7800, goal: 9000, img: "https://images.unsplash.com/photo-1441974231531-a6c1d51611b?auto=format&fit=crop&q=80&w=1200" },
   ];
 
@@ -56,7 +56,7 @@ const LandingPage: React.FC = () => {
         {/* Background Decorative Element */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px]" />
-           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px]" />
+           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-500/5 rounded-full blur-[120px] duration-700" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ const LandingPage: React.FC = () => {
               <div className="mt-10 flex items-center gap-4 text-sm text-muted-foreground">
                  <div className="flex -space-x-2">
                     {[1,2,3,4].map(i => (
-                       <img key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200" src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User" />
+                       <img key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200" src={`https://i.pravatar.cc/100?img=${i+10}`} alt="User avatar" />
                     ))}
                  </div>
                  <p><span className="font-bold text-gray-900">{(stats.activeSupporters + 1200).toLocaleString()}+</span> happy organizers already joined</p>
@@ -188,8 +188,8 @@ const LandingPage: React.FC = () => {
                <div className="relative mt-20 lg:mt-0">
                   <div className="rounded-[4rem] overflow-hidden shadow-3xl rotate-2 hover:rotate-0 transition-transform duration-700">
                      <img 
-                        src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1200" 
-                        alt="Happy couple celebrating" 
+                        src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=1200" 
+                        alt="Charity work in progress" 
                         className="w-full aspect-[4/5] object-cover scale-110 hover:scale-100 transition-transform duration-700"
                      />
                   </div>
