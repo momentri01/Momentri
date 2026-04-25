@@ -216,14 +216,3 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching event', error: error.message });
   }
 };
-      totalDonationsGross,
-      totalDonationsNet,
-      successfulDonationsCount,
-    };
-
-    res.json(eventDetails);
-  } catch (error: any) {
-    console.error(`Error fetching event by identifier (${identifier}):`, error);
-    res.status(500).json({ message: 'Error fetching event', error: error.message });
-  }
-};
