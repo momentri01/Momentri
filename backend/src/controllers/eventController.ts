@@ -132,29 +132,85 @@ export const getPublicEvents = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const getEventBySlugOrId = async (req: AuthRequest, res: Response) => {
+export const getEventBySlugOrId = async (req: Request, res: Response) => {
   const { identifier } = req.params;
 
   try {
-    const event = await prisma.event.findFirst({
-      where: {
-        OR: [{ id: identifier as string }, { slug: identifier as string }],
-        NOT: { status: EventStatus.DELETED },
-      },
+    // Try finding by ID first
+    let event = await prisma.event.findUnique({
+      where: { id: identifier },
       include: {
-        owner: { select: { fullName: true, email: true } },
+        owner: { select: { fullName: true, email: true, businessName: true } },
         wishlistItems: true,
         donations: {
           where: { paymentStatus: 'SUCCESSFUL' },
+          select: {
+            grossAmount: true,
+            netAmount: true,
+            currency: true,
+            paymentStatus: true,
+            donorName: true,
+            message: true,
+            createdAt: true
+          },
           orderBy: { createdAt: 'desc' },
           take: 10,
         },
       },
     });
 
-    if (!event) return res.status(404).json({ message: 'Event not found' });
-    res.json(event);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching event', error });
+    // If not found by ID, try finding by slug
+    if (!event) {
+      event = await prisma.event.findUnique({
+        where: { slug: identifier },
+        include: {
+          owner: { select: { fullName: true, email: true, businessName: true } },
+          wishlistItems: true,
+          donations: {
+            where: { paymentStatus: 'SUCCESSFUL' },
+            select: {
+              grossAmount: true,
+              netAmount: true,
+              currency: true,
+              paymentStatus: true,
+              donorName: true,
+              message: true,
+              createdAt: true
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+          },
+        },
+      });
+    }
+
+    if (!event || event.status === EventStatus.DELETED) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    // Aggregate donation data
+    let totalDonationsGross = 0;
+    let totalDonationsNet = 0;
+    let successfulDonationsCount = 0;
+
+    if (event.donations && Array.isArray(event.donations)) {
+      event.donations.forEach(donation => {
+        totalDonationsGross += donation.grossAmount;
+        totalDonationsNet += donation.netAmount;
+        successfulDonationsCount++;
+      });
+    }
+
+    const eventDetails = {
+      ...event,
+      totalDonationsGross,
+      totalDonationsNet,
+      successfulDonationsCount,
+    };
+
+    res.json(eventDetails);
+  } catch (error: any) {
+    console.error(`Error fetching event by identifier (${identifier}):`, error);
+    res.status(500).json({ message: 'Error fetching event', error: error.message });
   }
 };
