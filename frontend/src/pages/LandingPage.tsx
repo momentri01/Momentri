@@ -265,64 +265,40 @@ const LandingPage: React.FC = () => {
          </div>
       </section>
 
-      {/* Testimonial Section */}
-      <section className="py-24 bg-primary/5">
-         <div className="max-w-4xl mx-auto px-4 text-center">
-            <div className="mb-10 text-primary">
-               <HandHeart size={48} className="mx-auto" fill="currentColor" />
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-10 leading-tight italic">
-               "Momentris changed how our community raises funds. It’s professional, beautiful, and so easy for donors to use. We raised $10k in just two weeks!"
-            </h2>
-            <div className="flex flex-col items-center">
-               <img src="https://i.pravatar.cc/150?u=sarah" className="w-16 h-16 rounded-full border-4 border-white shadow-lg mb-4" alt="Sarah" />
-               <p className="font-black text-gray-900">Sarah Jenkins</p>
-               <p className="text-sm text-muted-foreground font-bold">Community Outreach Director</p>
-            </div>
-         </div>
-      </section>
-
-      {/* B2B Promo Section */}
-      <section className="py-24 bg-white border-y">
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-slate-50 rounded-[3rem] p-10 md:p-16 border flex flex-col md:flex-row items-center gap-12">
-               <div className="flex-1">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-6">
-                    <Globe size={14} />
-                    For Organizations & Charities
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-6">Scale your impact with Momentris for Business</h2>
-                  <p className="text-lg text-muted-foreground mb-8 font-medium">
-                     Professional tools for registered charities, nonprofits, and corporate CSR teams. 
-                     Issue tax receipts, manage donors, and access detailed impact analytics.
-                  </p>
+      {/* CTA Section */}
+      <section className="py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-primary rounded-[3.5rem] p-16 md:p-28 text-center relative overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]" />
+            
+            <div className="relative z-10 max-w-3xl mx-auto">
+               <h2 className="text-4xl md:text-6xl font-black text-white mb-10 tracking-tight leading-tight">Ready to amplify your organization's impact?</h2>
+               <p className="text-xl text-slate-400 mb-14 font-medium leading-relaxed">
+                 Join the growing number of organizations using Momentris to create meaningful change.
+               </p>
+               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                   <Link
-                    to="/b2b"
-                    className="inline-flex items-center justify-center rounded-full bg-gray-900 px-8 py-4 text-lg font-bold text-white transition-all hover:bg-gray-800 hover:-translate-y-1"
+                    to="/register" // Pointing to register for org sign up
+                    className="inline-flex items-center justify-center rounded-full bg-white px-12 py-6 text-xl font-bold text-primary shadow-2xl shadow-primary/40 transition-all hover:bg-slate-50 hover:scale-105 active:scale-95"
                   >
-                    Explore Organization Tools
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    Get Started Now
+                    <ArrowRight className="ml-3 h-6 w-6" />
+                  </Link>
+                  <Link
+                    to="/contact"
+                    className="inline-flex items-center justify-center rounded-full bg-primary-foreground/10 border border-white/20 px-12 py-6 text-xl font-bold text-white transition-all hover:bg-primary-foreground/20"
+                  >
+                    Contact Us
                   </Link>
                </div>
-               <div className="flex-1 grid grid-cols-2 gap-4">
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
-                     <p className="text-2xl font-black text-primary mb-1">Low</p>
-                     <p className="text-[10px] font-bold text-gray-400 uppercase">Platform Fees</p>
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
-                     <p className="text-2xl font-black text-primary mb-1">Direct</p>
-                     <p className="text-[10px] font-bold text-gray-400 uppercase">Tax Receipts</p>
-                  </div>
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border text-center col-span-2">
-                     <p className="text-2xl font-black text-primary mb-1">Verified</p>
-                     <p className="text-[10px] font-bold text-gray-400 uppercase">Organization Trust Badges</p>
-                  </div>
-               </div>
             </div>
-         </div>
+          </div>
+        </div>
       </section>
-
-      {/* CTA Section */}
+    </div>
+  );
+};
       <section className="py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gray-900 rounded-[4rem] p-12 md:p-24 text-center relative overflow-hidden">
