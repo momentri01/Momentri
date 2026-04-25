@@ -14,7 +14,7 @@ const LandingPage: React.FC = () => {
   const [activePhrase, setActivePhrase] = useState(0);
   const mockCampaigns = [
     { title: "The Thompson Wedding", raised: 8450, goal: 10000, img: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=1200" },
-    { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb15d4c2?auto=format&fit=crop&q=80&w=1200" },
+    { title: "Community Garden Project", raised: 2100, goal: 3000, img: "https://images.unsplash.com/photo-1466692476868-aef1dfb15d4c?auto=format&fit=crop&q=80&w=1200" },
     { title: "Sarah's Medical Fund", raised: 12500, goal: 15000, img: "https://images.unsplash.com/photo-1579684385127-1ecd15d5b8bd?auto=format&fit=crop&q=80&w=1200" },
     { title: "Local School Library", raised: 5200, goal: 7500, img: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=1200" },
     { title: "Animal Shelter Rescue", raised: 3800, goal: 5000, img: "https://images.unsplash.com/photo-154819997303d6c6a58c0f?auto=format&fit=crop&q=80&w=1200" },
