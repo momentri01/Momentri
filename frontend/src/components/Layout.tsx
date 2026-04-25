@@ -30,9 +30,6 @@ const Layout: React.FC = () => {
               <Link to="/home" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
                 Browse Events
               </Link>
-              <Link to="/b2b" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
-                For Organizations
-              </Link>
               {user ? (
                 <>
                   {user.role === 'ADMIN' && (
@@ -84,9 +81,6 @@ const Layout: React.FC = () => {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               <Link to="/home" className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted">
                 Browse Events
-              </Link>
-              <Link to="/b2b" className="block px-3 py-2 rounded-md text-base font-medium text-muted-foreground hover:text-primary hover:bg-muted">
-                For Organizations
               </Link>
               {user ? (
                 <>
@@ -140,7 +134,6 @@ const Layout: React.FC = () => {
               <h4 className="font-semibold mb-4">Platform</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/home" className="hover:text-primary">Browse Events</Link></li>
-                <li><Link to="/b2b" className="hover:text-primary">For Organizations</Link></li>
                 <li><Link to="/create-event" className="hover:text-primary">Create Event</Link></li>
                 <li><Link to="/pricing" className="hover:text-primary">Pricing</Link></li>
               </ul>
