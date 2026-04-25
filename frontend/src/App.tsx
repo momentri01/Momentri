@@ -10,12 +10,13 @@ import ForgotPassword from './pages/ForgotPassword';
 import PublicEvent from './pages/PublicEvent';
 import ManageEvent from './pages/ManageEvent';
 import AdminDashboard from './pages/AdminDashboard';
-import B2B from './pages/B2B';
 import Pricing from './pages/Pricing';
 import HelpCenter from './pages/HelpCenter';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProfileSettings from './pages/ProfileSettings';
+// Removed import for B2B
+// import B2B from './pages/B2B';
 
 // Remaining placeholder components
 const Settings = () => <div className="p-8">Settings</div>;
