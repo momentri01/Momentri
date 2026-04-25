@@ -136,9 +136,10 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
   const { identifier } = req.params;
 
   try {
+    const id = identifier as string;
     // Try finding by ID first
     let event = await prisma.event.findUnique({
-      where: { id: identifier },
+      where: { id },
       include: {
         owner: { select: { fullName: true, email: true, businessName: true } },
         wishlistItems: true,
@@ -157,12 +158,12 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
           take: 10,
         },
       },
-    });
+    }) as any;
 
     // If not found by ID, try finding by slug
     if (!event) {
       event = await prisma.event.findUnique({
-        where: { slug: identifier },
+        where: { slug: id },
         include: {
           owner: { select: { fullName: true, email: true, businessName: true } },
           wishlistItems: true,
@@ -181,7 +182,7 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
             take: 10,
           },
         },
-      });
+      }) as any;
     }
 
     if (!event || event.status === EventStatus.DELETED) {
@@ -193,8 +194,9 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
     let totalDonationsNet = 0;
     let successfulDonationsCount = 0;
 
-    if (event.donations && Array.isArray(event.donations)) {
-      event.donations.forEach(donation => {
+    const donations = (event as any).donations;
+    if (donations && Array.isArray(donations)) {
+      donations.forEach((donation: any) => {
         totalDonationsGross += donation.grossAmount;
         totalDonationsNet += donation.netAmount;
         successfulDonationsCount++;
@@ -203,6 +205,17 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
 
     const eventDetails = {
       ...event,
+      totalDonationsGross,
+      totalDonationsNet,
+      successfulDonationsCount,
+    };
+
+    res.json(eventDetails);
+  } catch (error: any) {
+    console.error(`Error fetching event by identifier (${identifier}):`, error);
+    res.status(500).json({ message: 'Error fetching event', error: error.message });
+  }
+};
       totalDonationsGross,
       totalDonationsNet,
       successfulDonationsCount,
