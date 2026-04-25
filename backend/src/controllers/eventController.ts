@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthRequest } from '../middleware/auth.js';
 import prisma from '../utils/prisma.js';
 import { Visibility, EventStatus } from '../types/prisma.js';
