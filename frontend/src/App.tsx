@@ -15,10 +15,10 @@ import HelpCenter from './pages/HelpCenter';
 import ContactUs from './pages/ContactUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import ProfileSettings from './pages/ProfileSettings';
-// Removed import for B2B
-// import B2B from './pages/B2B';
+// Removed unused import for B2B
+// Removed unused import for X icon if it was there
 
-// Remaining placeholder components
+// Placeholder components
 const Settings = () => <div className="p-8">Settings</div>;
 const NotFound = () => <div className="p-8">404 - Page Not Found</div>;
 
@@ -42,7 +42,7 @@ function App() {
           <Route path="privacy" element={<PrivacyPolicy />} />
           <Route path="profile" element={<ProfileSettings />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="b2b" element={<B2B />} />
+          {/* Removed B2B route */}
           <Route path="admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Route>
