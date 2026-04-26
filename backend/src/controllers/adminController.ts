@@ -100,20 +100,40 @@ export const updateWithdrawalStatus = async (req: AuthRequest, res: Response) =>
 
         try {
             console.log(`Initiating Stripe transfer of ${withdrawal.amount} to account ${withdrawal.user.stripeAccountId}`);
-            
+
+            // Check Stripe balance first to give a better error message
+            const balance = await stripe.balance.retrieve();
+            const available = balance.available.find(b => b.currency === withdrawal.currency.toLowerCase());
+            const pending = balance.pending.find(b => b.currency === withdrawal.currency.toLowerCase());
+
+            const availableAmount = (available?.amount || 0) / 100;
+            const pendingAmount = (pending?.amount || 0) / 100;
+
+            console.log(`Stripe Balance Check - Available: ${availableAmount}, Pending: ${pendingAmount} ${withdrawal.currency}`);
+
+            if (availableAmount < withdrawal.amount) {
+                let errorMessage = `Insufficient available funds. Required: ${withdrawal.amount}, Available: ${availableAmount}.`;
+                if (pendingAmount >= withdrawal.amount) {
+                    errorMessage += ` You have ${pendingAmount} in PENDING balance. In test mode, use the 4000...0077 card to add directly to available balance.`;
+                }
+                return res.status(400).json({ message: errorMessage });
+            }
+
             const transfer = await stripe.transfers.create({
                 amount: Math.round(withdrawal.amount * 100),
                 currency: withdrawal.currency.toLowerCase(),
                 destination: withdrawal.user.stripeAccountId,
                 transfer_group: `withdrawal_${withdrawal.id}`,
             });
-            
+
             console.log('Stripe transfer successful:', transfer.id);
         } catch (stripeError: any) {
             console.error('Stripe Transfer Error Details:', stripeError.raw ? stripeError.raw.message : stripeError.message);
-            return res.status(500).json({ message: 'Stripe transfer failed', error: stripeError.raw ? stripeError.raw.message : stripeError.message });
-        }
-    }
+            return res.status(500).json({ 
+                message: 'Stripe transfer failed', 
+                error: stripeError.raw ? stripeError.raw.message : stripeError.message 
+            });
+        }    }
 
     const updatedWithdrawal = await prisma.withdrawal.update({
       where: { id: id as string },
