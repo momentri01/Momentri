@@ -28,8 +28,6 @@ model User {
   stripeOnboardingComplete Boolean     @default(false)
   events                  Event[]
   withdrawals             Withdrawal[]
-  campaigns               Campaign[]   @relation("OrganizationCampaigns")
-  taxReceipts             TaxReceipt[] @relation("OrganizationTaxReceipts")
   createdAt               DateTime     @default(now())
   updatedAt               DateTime     @updatedAt
 }
@@ -68,10 +66,8 @@ model Event {
 
 model Donation {
   id                   String        @id @default(uuid())
-  eventId              String? // Nullable as donations can be for events OR campaigns
-  event                Event?        @relation(fields: [eventId], references: [id])
-  campaignId           String? // Link to Campaign
-  campaign             Campaign?     @relation(fields: [campaignId], references: [id]) // Back-relation to Campaign
+  eventId              String
+  event                Event         @relation(fields: [eventId], references: [id])
   donorName            String
   donorEmail           String
   isAnonymous          Boolean       @default(false)
@@ -124,7 +120,7 @@ model WishlistItem {
 model WishlistPurchase {
   id                   String            @id @default(uuid())
   eventId              String
-  event                Event             @relation(fields: [eventId], references: [id])
+  event             Event             @relation(fields: [eventId], references: [id])
   wishlistItemId       String
   wishlistItem         WishlistItem      @relation(fields: [wishlistItemId], references: [id])
   itemName             String
@@ -171,41 +167,4 @@ model Report {
   details     String?
   status      String   @default("PENDING") // PENDING, REVIEWED, RESOLVED
   createdAt   DateTime @default(now())
-}
-
-model Campaign {
-  id                 String       @id @default(uuid())
-  organizationId     String
-  organization       User         @relation("OrganizationCampaigns", fields: [organizationId], references: [id])
-  title              String
-  description        String
-  campaignGoal       Float
-  currency           String       @default("USD")
-  startDate          DateTime
-  endDate            DateTime?
-  status             String       @default("ACTIVE") // e.g., ACTIVE, COMPLETED, ARCHIVED
-  coverImageUrl      String?
-  totalDonationsGross Float @default(0)
-  totalPlatformFees  Float @default(0)
-  totalDonationsNet  Float @default(0)
-  createdAt          DateTime     @default(now())
-  updatedAt          DateTime     @updatedAt
-
-  donations          Donation[]
-}
-
-model TaxReceipt {
-  id                 String    @id @default(uuid())
-  donationId         String?   // Optional: Link to a specific donation
-  campaignId         String?   // Optional: Link to a specific campaign
-  organizationId     String
-  organization       User      @relation("OrganizationTaxReceipts", fields: [organizationId], references: [id])
-  donorName          String
-  donorEmail         String
-  amount             Float
-  currency           String
-  dateIssued         DateTime  @default(now())
-  receiptNumber      String    @unique
-  organizationTaxId  String?
-  issuedBy           String?   // e.g., "Momentris" or organization name
 }

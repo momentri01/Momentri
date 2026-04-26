@@ -25,8 +25,6 @@ const Register: React.FC = () => {
     role: 'USER'
   });
 
-  const [activeTab, setActiveTab] = useState<'individual' | 'organization'>('individual');
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     const type = e.target instanceof HTMLInputElement ? e.target.type : 'text';
@@ -50,7 +48,7 @@ const Register: React.FC = () => {
       const { confirmPassword, ...registerData } = formData;
       const data = await api.post('/auth/register', { 
           ...registerData, 
-          role: activeTab === 'organization' ? 'ORGANIZATION' : 'USER' 
+          role: 'USER' 
       });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -67,38 +65,25 @@ const Register: React.FC = () => {
     <div className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-muted/30 px-4 py-12">
       <div className="max-w-md w-full">
         <div className="text-center mb-10">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
+          <Link to="/" className="inline-flex items-center justify-center space-x-2 mb-6">
             <HandHeart className="h-10 w-10 text-primary" fill="currentColor" />
             <span className="text-3xl font-bold tracking-tight text-primary">Momentris</span>
           </Link>
-          <div className="flex bg-gray-100 p-1 rounded-full mb-6">
-            <button type="button" className={`flex-1 py-2 rounded-full font-bold ${activeTab === 'individual' ? 'bg-white shadow-sm' : ''}`} onClick={() => setActiveTab('individual')}>Individual</button>
-            <button type="button" className={`flex-1 py-2 rounded-full font-bold ${activeTab === 'organization' ? 'bg-white shadow-sm' : ''}`} onClick={() => setActiveTab('organization')}>Organization</button>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Create your account</h1>
+            <p className="text-muted-foreground font-medium">Organizations & Charities: Coming Soon</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white p-8 rounded-[2rem] border shadow-xl space-y-6">
           <div>
-            <label className="block text-sm font-bold mb-2">{activeTab === 'organization' ? 'Organization Name' : 'Full Name'}</label>
-            <input name="fullName" required className="w-full rounded-xl border p-3" value={formData.fullName} onChange={handleChange} />
+            <label className="block text-sm font-bold mb-2 text-gray-700 uppercase tracking-widest text-[10px]">Full Name</label>
+            <input name="fullName" required className="w-full rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 focus:ring-primary focus:bg-white transition-all font-medium" placeholder="Jane Doe" value={formData.fullName} onChange={handleChange} />
           </div>
-          
-          {activeTab === 'organization' && (
-            <>
-              <div>
-                <label className="block text-sm font-bold mb-2">Registration Number</label>
-                <input name="registrationNumber" required className="w-full rounded-xl border p-3" value={formData.registrationNumber} onChange={handleChange} />
-              </div>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" name="isCharity" checked={formData.isCharity} onChange={handleChange} />
-                <span className="text-sm font-bold">Registered Charity?</span>
-              </label>
-            </>
-          )}
 
           <div>
-            <label className="block text-sm font-bold mb-2">Email Address</label>
-            <input name="email" required type="email" className="w-full rounded-xl border p-3" value={formData.email} onChange={handleChange} />
+            <label className="block text-sm font-bold mb-2 text-gray-700 uppercase tracking-widest text-[10px]">Email Address</label>
+            <input name="email" required type="email" className="w-full rounded-xl border border-gray-100 bg-gray-50 px-4 py-3 focus:ring-primary focus:bg-white transition-all font-medium" placeholder="jane@example.com" value={formData.email} onChange={handleChange} />
           </div>
           
           <div className="grid grid-cols-2 gap-4">
