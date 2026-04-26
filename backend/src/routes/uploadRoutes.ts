@@ -8,7 +8,7 @@ const storage = new Storage({
     credentials: JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON || '{}'),
     projectId: process.env.GOOGLE_CLOUD_PROJECT_ID,
 });
-const bucket = storage.bucket('momentri_upload');
+const bucket = storage.bucket('momentris_upload');
 
 router.post('/', authenticate as any, (req: Request, res: Response, next: any) => {
   upload.single('image')(req, res, async (err: any) => {
@@ -29,7 +29,7 @@ router.post('/', authenticate as any, (req: Request, res: Response, next: any) =
       res.status(500).json({ message: error.message });
     });
     blobStream.on('finish', () => {
-        const imageUrl = `https://storage.googleapis.com/momentri_upload/${filename}`;
+        const imageUrl = `https://storage.googleapis.com/momentris_upload/${filename}`;
         res.status(200).json({ imageUrl });
     });
     blobStream.end(req.file.buffer);
@@ -52,7 +52,7 @@ router.post('/multiple', authenticate as any, (req: Request, res: Response, next
           const filename = `uploads/${Date.now()}-${file.originalname}`;
           const blob = bucket.file(filename);
           await blob.save(file.buffer, { contentType: file.mimetype });
-          return `https://storage.googleapis.com/momentri_upload/${filename}`;
+          return `https://storage.googleapis.com/momentris_upload/${filename}`;
       }));
       
       res.status(200).json({ imageUrls });
