@@ -25,19 +25,26 @@ export const createCatalogItem = async (req: AuthRequest, res: Response) => {
 
 export const getAllCatalogItems = async (req: AuthRequest, res: Response) => {
   const userId = req.user?.userId;
+  const userRole = req.user?.role;
   
   try {
-    let userCountry = 'United States';
+    let whereClause: any = { isActive: true };
     
-    if (userId) {
-      const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (user?.country) {
-        userCountry = user.country;
+    // If not admin, filter by user's country
+    if (userRole !== 'ADMIN') {
+      let userCountry = 'United States';
+      
+      if (userId) {
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        if (user?.country) {
+          userCountry = user.country;
+        }
       }
+      whereClause.country = userCountry;
     }
 
     const items = await prisma.catalogItem.findMany({
-      where: { isActive: true, country: userCountry },
+      where: whereClause,
       orderBy: { createdAt: 'desc' },
     });
     

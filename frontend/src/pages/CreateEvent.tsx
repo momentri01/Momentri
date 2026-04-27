@@ -457,7 +457,7 @@ const CreateEvent: React.FC = () => {
                              </div>
                              <div className="flex justify-between items-start mb-2">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.category}</span>
-                                <p className="font-black text-primary">${item.price}</p>
+                                <p className="font-black text-primary">{item.currency === 'CAD' ? 'C$' : '$'}{item.price}</p>
                              </div>
                              <p className="font-bold text-sm mb-1">{item.name}</p>
                              <p className="text-xs text-muted-foreground line-clamp-1">{item.description}</p>

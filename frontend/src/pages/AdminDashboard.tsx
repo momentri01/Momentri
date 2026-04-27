@@ -28,6 +28,8 @@ const AdminDashboard: React.FC = () => {
     description: '',
     category: 'Birthday',
     price: '',
+    country: 'United States',
+    currency: 'USD',
     imageUrls: [] as string[]
   });
 
@@ -146,7 +148,15 @@ const AdminDashboard: React.FC = () => {
       }
       setIsAddingItem(false);
       setEditingItem(null);
-      setNewItem({ name: '', description: '', category: 'Birthday', price: '', imageUrls: [] });
+      setNewItem({ 
+        name: '', 
+        description: '', 
+        category: 'Birthday', 
+        price: '', 
+        country: 'United States',
+        currency: 'USD',
+        imageUrls: [] 
+      });
       await fetchData();
     } catch (error) {
       alert('Failed to save catalog item');
@@ -159,6 +169,8 @@ const AdminDashboard: React.FC = () => {
     setEditingItem({ 
       ...item, 
       price: item.price.toString(),
+      country: item.country || 'United States',
+      currency: item.currency || (item.country === 'Canada' ? 'CAD' : 'USD'),
       imageUrls: Array.isArray(item.imageUrls) ? item.imageUrls : JSON.parse(item.imageUrls || '[]')
     });
     setIsAddingItem(true);
@@ -666,6 +678,8 @@ const AdminDashboard: React.FC = () => {
                           description: '', 
                           category: 'Birthday', 
                           price: '', 
+                          country: 'United States',
+                          currency: 'USD',
                           imageUrls: [] 
                         });
                         setIsAddingItem(!isAddingItem);
@@ -713,9 +727,30 @@ const AdminDashboard: React.FC = () => {
                               <option>Other</option>
                            </select>
                         </div>
+                        <div>
+                           <label className="block text-[10px] font-black mb-1.5 uppercase tracking-widest text-muted-foreground">Country</label>
+                           <select 
+                              className="w-full rounded-xl border-border bg-muted/20 px-4 py-2.5 text-sm font-bold"
+                              value={editingItem ? editingItem.country : newItem.country}
+                              onChange={(e) => {
+                                 const country = e.target.value;
+                                 const currency = country === 'Canada' ? 'CAD' : 'USD';
+                                 if (editingItem) {
+                                    setEditingItem({...editingItem, country, currency});
+                                 } else {
+                                    setNewItem({...newItem, country, currency});
+                                 }
+                              }}
+                           >
+                              <option value="United States">United States</option>
+                              <option value="Canada">Canada</option>
+                           </select>
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                            <div>
-                              <label className="block text-[10px] font-black mb-1.5 uppercase tracking-widest text-muted-foreground">Price ($)</label>
+                              <label className="block text-[10px] font-black mb-1.5 uppercase tracking-widest text-muted-foreground">
+                                 Price ({editingItem ? editingItem.currency : newItem.currency})
+                              </label>
                               <input 
                                  required 
                                  type="number"
@@ -832,16 +867,19 @@ const AdminDashboard: React.FC = () => {
                               <Trash2 size={14} />
                            </button>
                         </div>
-                        <div className="absolute top-2 left-2">
-                           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm border border-primary/10">
+                        <div className="absolute top-2 left-2 flex flex-col gap-1">
+                           <span className="text-[10px] font-black uppercase tracking-widest text-primary bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm border border-primary/10 w-fit">
                               {item.category}
+                           </span>
+                           <span className="text-[10px] font-black uppercase tracking-widest text-blue-600 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm border border-blue-600/10 w-fit">
+                              {item.country === 'Canada' ? '🇨🇦 Canada' : '🇺🇸 USA'}
                            </span>
                         </div>
                      </div>
                      <div className="p-4 flex flex-col flex-1">
                         <div className="flex justify-between items-start mb-1 gap-2">
                            <h4 className="font-bold text-gray-900 line-clamp-1 flex-1">{item.name}</h4>
-                           <p className="font-black text-primary text-sm">${item.price}</p>
+                           <p className="font-black text-primary text-sm whitespace-nowrap">{item.currency === 'CAD' ? 'C$' : '$'}{item.price}</p>
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2 font-medium flex-1">{item.description}</p>
                      </div>
