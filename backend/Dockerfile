@@ -1,20 +1,25 @@
 # Use Node.js 20 as base
 FROM node:20-slim AS builder
 
+# Install openssl for Prisma in builder stage
+RUN apt-get update -y && apt-get install -y openssl
+
 # Set working directory
 WORKDIR /app
 
-# Copy package files (prefixed with backend/)
+# Copy package files
 COPY backend/package*.json ./
+
+# Copy prisma schema for postinstall npx prisma generate
+COPY backend/prisma ./prisma/
 
 # Install all dependencies
 RUN npm install
 
-# Copy source and prisma
+# Copy rest of the source
 COPY backend/ .
 
-# Generate Prisma client and build
-RUN npx prisma generate
+# Build the project
 RUN npm run build
 
 # --- Runtime Stage ---
