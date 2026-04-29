@@ -45,6 +45,12 @@ app.use(cors({
   credentials: true
 }));
 
+// Set COOP header for Google Auth popups
+app.use((req, res, next) => {
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  next();
+});
+
 // Webhook must be before express.json()
 app.post('/api/webhook/stripe', express.raw({ type: 'application/json' }), handleStripeWebhook);
 
