@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../lib/api';
-import { HandHeart, Gift, Share2, Calendar, MapPin, User, MessageCircle, X, ShoppingCart, Minus, Plus, CheckCircle2, ShieldCheck, Flag, TrendingUp, Users, AlertTriangle } from 'lucide-react';
+import { HandHeart, Gift, Share2, Calendar, MapPin, User, MessageCircle, X, ShoppingCart, Minus, Plus, CheckCircle2, ShieldCheck, Flag, TrendingUp, Users, AlertTriangle, Package } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 interface EventData {
