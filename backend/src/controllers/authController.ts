@@ -163,7 +163,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(403).json({ message: 'Email not verified', email });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash as string);
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
