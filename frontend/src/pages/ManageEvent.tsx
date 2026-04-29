@@ -226,18 +226,28 @@ const ManageEvent: React.FC = () => {
                  <h3 className="text-xl font-bold">Registry Items</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                 {event.wishlistItems.map((item: any) => (
-                    <div key={item.id} className="bg-white p-6 rounded-2xl border shadow-sm flex items-center gap-4">
-                       <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                          <Gift size={24} />
+                 {event.wishlistItems.map((item: any) => {
+                    const catalogItem = item.catalogItem;
+                    const imageUrls = catalogItem?.imageUrls ? (typeof catalogItem.imageUrls === 'string' ? JSON.parse(catalogItem.imageUrls) : catalogItem.imageUrls) : [];
+                    const displayImage = imageUrls.length > 0 ? imageUrls[0] : item.itemImageUrl;
+
+                    return (
+                       <div key={item.id} className="bg-white p-6 rounded-2xl border shadow-sm flex items-center gap-4">
+                          <div className="h-16 w-16 rounded-xl bg-muted flex items-center justify-center text-primary overflow-hidden border">
+                             {displayImage ? (
+                                <img src={displayImage} className="w-full h-full object-cover" alt={item.itemName} />
+                             ) : (
+                                <Gift size={24} />
+                             )}
+                          </div>
+                          <div>
+                             <p className="font-bold text-sm">{item.itemName}</p>
+                             <p className="text-xs text-muted-foreground font-medium">{item.quantityPurchased} of {item.quantityRequested} purchased</p>
+                             <p className="text-sm font-bold text-primary mt-1">{event.currency} {item.price}</p>
+                          </div>
                        </div>
-                       <div>
-                          <p className="font-bold text-sm">{item.itemName}</p>
-                          <p className="text-xs text-muted-foreground font-medium">{item.quantityPurchased} of {item.quantityRequested} purchased</p>
-                          <p className="text-sm font-bold text-primary mt-1">{event.currency} {item.price}</p>
-                       </div>
-                    </div>
-                 ))}
+                    );
+                 })}
                  {event.wishlistItems.length === 0 && (
                     <div className="col-span-full py-24 text-center bg-muted/20 rounded-[3rem] border border-dashed border-muted-foreground/30">
                        <p className="text-muted-foreground font-medium">Your registry is empty.</p>

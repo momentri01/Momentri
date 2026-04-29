@@ -142,7 +142,9 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
       where: { id },
       include: {
         owner: { select: { fullName: true, email: true, businessName: true } },
-        wishlistItems: true,
+        wishlistItems: {
+          include: { catalogItem: true }
+        },
         donations: {
           where: { paymentStatus: 'SUCCESSFUL' },
           select: {
@@ -166,7 +168,9 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
         where: { slug: id },
         include: {
           owner: { select: { fullName: true, email: true, businessName: true } },
-          wishlistItems: true,
+          wishlistItems: {
+            include: { catalogItem: true }
+          },
           donations: {
             where: { paymentStatus: 'SUCCESSFUL' },
             select: {

@@ -28,8 +28,10 @@ const PublicEvent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [showPDP, setShowPDP] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   
   const [donationForm, setDonationForm] = useState({
     donorName: '',
@@ -132,6 +134,12 @@ const PublicEvent: React.FC = () => {
   const openPurchaseModal = (item: any) => {
     if (item.quantityPurchased >= item.quantityRequested) return;
     setSelectedItem(item);
+    setActiveImageIndex(0);
+    setShowPDP(true);
+  };
+
+  const handleStartPurchase = () => {
+    setShowPDP(false);
     setPurchaseForm({ ...purchaseForm, quantity: 1 });
     setShowPurchaseModal(true);
   };
@@ -219,6 +227,10 @@ const PublicEvent: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                      {event.wishlistItems.map((item) => {
                         const isPurchased = item.quantityPurchased >= item.quantityRequested;
+                        const catalogItem = item.catalogItem;
+                        const imageUrls = catalogItem?.imageUrls ? (typeof catalogItem.imageUrls === 'string' ? JSON.parse(catalogItem.imageUrls) : catalogItem.imageUrls) : [];
+                        const displayImage = imageUrls.length > 0 ? imageUrls[0] : item.itemImageUrl;
+
                         return (
                            <div 
                               key={item.id} 
@@ -230,10 +242,14 @@ const PublicEvent: React.FC = () => {
                               }`}
                            >
                               <div className="flex items-center gap-4">
-                                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-colors ${
-                                    isPurchased ? 'bg-gray-100 text-gray-400' : 'bg-primary text-white shadow-lg'
+                                 <div className={`h-16 w-16 rounded-xl flex items-center justify-center transition-colors overflow-hidden border ${
+                                    isPurchased ? 'bg-gray-100 text-gray-400' : 'bg-muted shadow-lg'
                                  }`}>
-                                    {isPurchased ? <CheckCircle2 size={24}/> : <ShoppingCart size={24} />}
+                                    {displayImage ? (
+                                       <img src={displayImage} className="w-full h-full object-cover" alt={item.itemName} />
+                                    ) : (
+                                       isPurchased ? <CheckCircle2 size={24}/> : <ShoppingCart size={24} />
+                                    )}
                                  </div>
                                  <div className="flex-1">
                                     <p className="font-bold text-sm text-gray-900">{item.itemName}</p>
@@ -516,6 +532,105 @@ const PublicEvent: React.FC = () => {
                     Submit Report
                  </button>
               </form>
+           </div>
+        </div>
+      )}
+
+      {/* PDP Modal */}
+      {showPDP && selectedItem && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+           <div className="absolute inset-0 bg-black/70 backdrop-blur-md" onClick={() => setShowPDP(false)} />
+           <div className="bg-white rounded-[2.5rem] w-full max-w-4xl relative z-10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300 flex flex-col md:flex-row max-h-[90vh]">
+              <button onClick={() => setShowPDP(false)} className="absolute top-6 right-6 z-20 p-2 bg-white/80 backdrop-blur-sm hover:bg-white rounded-full transition-colors text-gray-900 shadow-sm border"><X size={20}/></button>
+              
+              {/* Image Section */}
+              <div className="md:w-1/2 bg-gray-50 flex flex-col relative h-[40vh] md:h-auto">
+                 <div className="flex-1 relative overflow-hidden">
+                    {(() => {
+                       const imageUrls = selectedItem.catalogItem?.imageUrls ? (typeof selectedItem.catalogItem.imageUrls === 'string' ? JSON.parse(selectedItem.catalogItem.imageUrls) : selectedItem.catalogItem.imageUrls) : (selectedItem.itemImageUrl ? [selectedItem.itemImageUrl] : []);
+                       return imageUrls.length > 0 ? (
+                          <img 
+                             src={imageUrls[activeImageIndex]} 
+                             className="w-full h-full object-cover animate-in fade-in duration-500" 
+                             alt={selectedItem.itemName} 
+                          />
+                       ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-200">
+                             <Package size={120} />
+                          </div>
+                       );
+                    })()}
+                 </div>
+                 {(() => {
+                    const imageUrls = selectedItem.catalogItem?.imageUrls ? (typeof selectedItem.catalogItem.imageUrls === 'string' ? JSON.parse(selectedItem.catalogItem.imageUrls) : selectedItem.catalogItem.imageUrls) : (selectedItem.itemImageUrl ? [selectedItem.itemImageUrl] : []);
+                    return imageUrls.length > 1 && (
+                       <div className="p-4 flex gap-2 overflow-x-auto no-scrollbar justify-center bg-white/50 backdrop-blur-sm border-t border-white/20">
+                          {imageUrls.map((url: string, idx: number) => (
+                             <button 
+                                key={idx}
+                                onClick={() => setActiveImageIndex(idx)}
+                                className={`h-16 w-16 rounded-xl overflow-hidden border-2 transition-all flex-shrink-0 ${
+                                   activeImageIndex === idx ? 'border-primary shadow-lg scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                                }`}
+                             >
+                                <img src={url} className="w-full h-full object-cover" alt="Thumb" />
+                             </button>
+                          ))}
+                       </div>
+                    );
+                 })()}
+              </div>
+
+              {/* Info Section */}
+              <div className="md:w-1/2 p-8 md:p-12 overflow-y-auto flex flex-col">
+                 <div className="mb-auto">
+                    <div className="flex items-center gap-2 mb-4">
+                       <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary bg-primary/5 px-2.5 py-1 rounded-md border border-primary/10">
+                          {selectedItem.catalogItem?.category || 'Registry Item'}
+                       </span>
+                    </div>
+                    <h2 className="text-3xl font-black text-gray-900 leading-tight mb-4">{selectedItem.itemName}</h2>
+                    <div className="flex items-baseline gap-2 mb-8">
+                       <span className="text-3xl font-black text-primary">{event.currency} {selectedItem.price.toLocaleString()}</span>
+                       <span className="text-sm font-bold text-muted-foreground uppercase tracking-widest">Plus Shipping</span>
+                    </div>
+                    
+                    <div className="space-y-6 mb-8">
+                       <div>
+                          <h3 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-3 flex items-center gap-2">
+                             <Package size={14} /> Description
+                          </h3>
+                          <p className="text-gray-600 leading-relaxed font-medium">
+                             {selectedItem.itemDescription || 'No description available for this item.'}
+                          </p>
+                       </div>
+                       
+                       <div className="grid grid-cols-2 gap-6 pt-6 border-t border-gray-100">
+                          <div>
+                             <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Requested</h4>
+                             <p className="text-xl font-black text-gray-900">{selectedItem.quantityRequested}</p>
+                          </div>
+                          <div>
+                             <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Still Needed</h4>
+                             <p className="text-xl font-black text-primary">{selectedItem.quantityRequested - selectedItem.quantityPurchased}</p>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="pt-8 mt-8 border-t border-gray-100">
+                    <button 
+                       onClick={handleStartPurchase}
+                       className="w-full inline-flex items-center justify-center rounded-full bg-primary px-8 py-5 text-xl font-black text-primary-foreground shadow-[0_15px_30px_rgba(var(--primary),0.3)] transition-all hover:bg-primary/90 hover:scale-[1.02] active:scale-95"
+                    >
+                       <Gift className="mr-3" size={24} />
+                       Give this Gift
+                    </button>
+                    <p className="text-center text-xs text-muted-foreground font-medium mt-4">
+                       Secure payment processed via Stripe
+                    </p>
+                 </div>
+              </div>
            </div>
         </div>
       )}
