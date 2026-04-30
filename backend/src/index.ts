@@ -1,6 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import dns from 'node:dns';
+
+// Force IPv4 as priority for all network connections
+// This fixes ESOCKET ENETUNREACH errors on IPv6 in many cloud environments
+dns.setDefaultResultOrder('ipv4first');
+
 import authRoutes from './routes/authRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import donationRoutes from './routes/donationRoutes.js';
