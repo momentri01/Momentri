@@ -8,7 +8,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-});
+  // Force IPv4 as some environments (like Railway) may have issues with IPv6 outbound
+  family: 4 
+} as any);
 
 export const sendVerificationEmail = async (email: string, code: string) => {
   const mailOptions = {
