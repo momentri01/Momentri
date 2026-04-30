@@ -154,17 +154,32 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
   try {
+    console.log(`Login attempt for: ${email}`);
+    
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !user.passwordHash) {
+    
+    if (!user) {
+      console.log(`User not found: ${email}`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    if (!user.passwordHash) {
+      console.log(`User has no password (likely Google-only): ${email}`);
+      return res.status(400).json({ message: 'Please sign in with Google' });
+    }
+
     if (!user.isEmailVerified) {
+      console.log(`User email not verified: ${email}`);
       return res.status(403).json({ message: 'Email not verified', email });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash as string);
+    const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordCorrect) {
+      console.log(`Incorrect password for: ${email}`);
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
@@ -174,9 +189,11 @@ export const login = async (req: Request, res: Response) => {
       { expiresIn: '7d' }
     );
 
+    console.log(`Login successful: ${email}`);
     res.status(200).json({ token, user: { id: user.id, email: user.email, fullName: user.fullName, role: user.role } });
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong', error });
+  } catch (error: any) {
+    console.error('LOGIN ERROR:', error);
+    res.status(500).json({ message: 'Something went wrong', error: error.message || error });
   }
 };
 
