@@ -37,13 +37,12 @@ const Login: React.FC = () => {
 
       if (error.response?.status === 403) {
         setInfoNote('Your account is not verified yet. We have sent a new verification code to your email.');
-        // Auto-resend code for convenience
+        
+        // Auto-resend code in background (non-blocking)
         const emailToResend = error.response?.data?.email || formData.email;
-        try {
-          await api.post('/auth/resend-code', { email: emailToResend });
-        } catch (resendError) {
-          console.error('Failed to auto-resend code');
-        }
+        api.post('/auth/resend-code', { email: emailToResend })
+          .catch(err => console.error('Background code resend failed:', err));
+          
         setShowMFA(true);
       } else {
         alert(error.response?.data?.message || 'Login failed. Please check your credentials.');
