@@ -16,6 +16,7 @@ const Register: React.FC = () => {
   const [showMFA, setShowMFA] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [resending, setResending] = useState(false);
+  const [infoNote, setInfoNote] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     fullName: '',
@@ -55,6 +56,7 @@ const Register: React.FC = () => {
           ...registerData, 
           role: 'USER' 
       });
+      setInfoNote('Welcome to Momentris! We have sent a verification code to your email.');
       setShowMFA(true);
     } catch (error: any) {
       alert(error.response?.data?.message || 'Registration failed. Please try again.');
@@ -122,7 +124,13 @@ const Register: React.FC = () => {
                 <ShieldCheck size={40} />
              </div>
              <h1 className="text-2xl font-black text-gray-900 tracking-tight">Verify your email</h1>
-             <p className="text-muted-foreground font-medium mt-2">
+             {infoNote && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3 text-left animate-in fade-in slide-in-from-top-2">
+                   <AlertCircle className="text-blue-500 shrink-0 mt-0.5" size={18} />
+                   <p className="text-sm text-blue-700 font-medium leading-relaxed">{infoNote}</p>
+                </div>
+             )}
+             <p className="text-muted-foreground font-medium mt-4">
                 We've sent a 6-digit code to <span className="text-gray-900 font-bold">{formData.email}</span>
              </p>
           </div>

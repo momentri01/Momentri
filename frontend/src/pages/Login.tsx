@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { HandHeart, Mail, Lock, ArrowRight, ShieldCheck, RefreshCw } from 'lucide-react';
+import { HandHeart, Mail, Lock, ArrowRight, ShieldCheck, RefreshCw, AlertCircle } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 
 const Login: React.FC = () => {
@@ -10,6 +10,7 @@ const Login: React.FC = () => {
   const [showMFA, setShowMFA] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
   const [resending, setResending] = useState(false);
+  const [infoNote, setInfoNote] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     email: '',
@@ -31,9 +32,16 @@ const Login: React.FC = () => {
       window.location.reload();
     } catch (error: any) {
       if (error.response?.status === 403 && error.response?.data?.email) {
+        setInfoNote('Your account is not verified yet. We have sent a new verification code to your email.');
+        // Auto-resend code for convenience
+        try {
+          await api.post('/auth/resend-code', { email: formData.email });
+        } catch (resendError) {
+          console.error('Failed to auto-resend code');
+        }
         setShowMFA(true);
       } else {
-        alert('Login failed. Please check your credentials.');
+        alert(error.response?.data?.message || 'Login failed. Please check your credentials.');
       }
     } finally {
       setLoading(false);
@@ -97,8 +105,14 @@ const Login: React.FC = () => {
                 <ShieldCheck size={40} />
              </div>
              <h1 className="text-2xl font-black text-gray-900 tracking-tight">Verify your email</h1>
-             <p className="text-muted-foreground font-medium mt-2">
-                Your account is not verified yet. We've sent a 6-digit code to <span className="text-gray-900 font-bold">{formData.email}</span>
+             {infoNote && (
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-start gap-3 text-left animate-in fade-in slide-in-from-top-2">
+                   <AlertCircle className="text-blue-500 shrink-0 mt-0.5" size={18} />
+                   <p className="text-sm text-blue-700 font-medium leading-relaxed">{infoNote}</p>
+                </div>
+             )}
+             <p className="text-muted-foreground font-medium mt-4">
+                Enter the 6-digit code sent to <span className="text-gray-900 font-bold">{formData.email}</span>
              </p>
           </div>
 
