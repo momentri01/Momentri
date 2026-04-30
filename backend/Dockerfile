@@ -40,4 +40,4 @@ COPY --from=builder /app/prisma ./prisma
 ENV NODE_ENV=production
 
 # Command to run
-CMD npx prisma db push && npm run start
+CMD npx prisma db push --accept-data-loss && npm run start
