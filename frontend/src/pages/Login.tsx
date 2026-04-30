@@ -31,11 +31,16 @@ const Login: React.FC = () => {
       navigate('/dashboard');
       window.location.reload();
     } catch (error: any) {
-      if (error.response?.status === 403 && error.response?.data?.email) {
+      console.error('Login error detail:', error);
+      console.log('Error response status:', error.response?.status);
+      console.log('Error response data:', error.response?.data);
+
+      if (error.response?.status === 403) {
         setInfoNote('Your account is not verified yet. We have sent a new verification code to your email.');
         // Auto-resend code for convenience
+        const emailToResend = error.response?.data?.email || formData.email;
         try {
-          await api.post('/auth/resend-code', { email: formData.email });
+          await api.post('/auth/resend-code', { email: emailToResend });
         } catch (resendError) {
           console.error('Failed to auto-resend code');
         }
