@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
-import { HandHeart, Mail, Lock, Eye, EyeOff, ShieldCheck, RefreshCw } from 'lucide-react';
+import { HandHeart, Mail, Lock, Eye, EyeOff, ShieldCheck, RefreshCw, AlertCircle } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 
 const provinces: Record<string, string[]> = {
