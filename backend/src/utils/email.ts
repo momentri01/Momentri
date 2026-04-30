@@ -1,29 +1,27 @@
 import nodemailer from 'nodemailer';
+import dns from 'node:dns';
 
-// Helper to create transporter with better defaults for cloud environments
+// Custom lookup function to force IPv4
+const lookupIPv4 = (hostname: string, options: any, callback: any) => {
+  return dns.lookup(hostname, { family: 4 }, callback);
+};
+
 const createTransporter = () => {
   const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
-  const isGmail = host.includes('gmail.com');
-
+  
   const config: any = {
     host: host,
     port: parseInt(process.env.EMAIL_PORT || '465'),
-    secure: process.env.EMAIL_SECURE !== 'false', // Default to true for 465
+    secure: process.env.EMAIL_SECURE !== 'false',
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // Force IPv4
+    // Standard family: 4 option
     family: 4,
+    // Custom lookup ensures Node.js doesn't even try IPv6
+    lookup: lookupIPv4
   };
-
-  // If using Gmail, 'service' property often works better with Nodemailer
-  if (isGmail) {
-    delete config.host;
-    delete config.port;
-    delete config.secure;
-    config.service = 'gmail';
-  }
 
   return nodemailer.createTransport(config);
 };
