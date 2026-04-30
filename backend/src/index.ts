@@ -43,11 +43,24 @@ console.log("ENV CHECK:", {
 const app: Express = express();
 const port = process.env.PORT || 8000;
 
-const allowedOrigin = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
-console.log("CORS CHECK: Allowed Origin is", allowedOrigin);
+const allowedOrigins = [
+  (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, ''),
+  'https://www.momentris.com',
+  'https://momentris.com'
+];
+
+console.log("CORS CHECK: Allowed Origins are", allowedOrigins);
 
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
 
