@@ -1,16 +1,34 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,
-  port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_SECURE === 'true',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  // Force IPv4 as some environments (like Railway) may have issues with IPv6 outbound
-  family: 4 
-} as any);
+// Helper to create transporter with better defaults for cloud environments
+const createTransporter = () => {
+  const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
+  const isGmail = host.includes('gmail.com');
+
+  const config: any = {
+    host: host,
+    port: parseInt(process.env.EMAIL_PORT || '465'),
+    secure: process.env.EMAIL_SECURE !== 'false', // Default to true for 465
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    // Force IPv4
+    family: 4,
+  };
+
+  // If using Gmail, 'service' property often works better with Nodemailer
+  if (isGmail) {
+    delete config.host;
+    delete config.port;
+    delete config.secure;
+    config.service = 'gmail';
+  }
+
+  return nodemailer.createTransport(config);
+};
+
+const transporter = createTransporter();
 
 export const sendVerificationEmail = async (email: string, code: string) => {
   const mailOptions = {
@@ -44,7 +62,10 @@ export const sendVerificationEmail = async (email: string, code: string) => {
   };
 
   try {
+    // Verify connection before sending
+    await transporter.verify();
     await transporter.sendMail(mailOptions);
+    console.log(`Verification email sent to ${email}`);
   } catch (error) {
     console.error('Error sending verification email:', error);
     throw new Error('Failed to send verification email');
