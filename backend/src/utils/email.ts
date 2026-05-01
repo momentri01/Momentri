@@ -2,12 +2,8 @@ import nodemailer from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import dns from 'node:dns';
 
-// Custom lookup function to force IPv4
-const lookupIPv4 = (hostname: string, options: any, callback: any) => {
-  return dns.lookup(hostname, { family: 4 }, (err, address, family) => {
-    callback(err, address, family);
-  });
-};
+// Force IPv4 for all DNS lookups in this module
+dns.setDefaultResultOrder('ipv4first');
 
 const createTransporter = () => {
   const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
@@ -19,8 +15,6 @@ const createTransporter = () => {
     port: 587,
     secure: false,
     auth: { user, pass },
-    family: 4,
-    lookup: lookupIPv4,
     connectionTimeout: 10000,
   };
   return nodemailer.createTransport(options);
