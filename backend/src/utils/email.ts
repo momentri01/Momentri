@@ -17,21 +17,22 @@ const lookupIPv4 = (hostname: string, options: any, callback: any) => {
 const createTransporter = () => {
   const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
   const user = process.env.EMAIL_USER;
-  const pass = process.env.EMAIL_PASS ? '********' : 'MISSING';
+  // Automatically strip spaces from the app password
+  const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s/g, '') : '';
   
-  console.log(`Initializing Mailer: Host=${host}, User=${user}, Pass=${pass}`);
+  console.log(`Initializing Mailer: Host=${host}, User=${user}, Pass=${pass ? 'PROVIDED (Spaces Stripped)' : 'MISSING'}`);
 
   const config: any = {
     host: host,
     port: parseInt(process.env.EMAIL_PORT || '465'),
-    secure: process.env.EMAIL_SECURE !== 'false',
+    secure: true, // Use SSL for 465
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: user,
+      pass: pass,
     },
+    // Extremely strict IPv4 enforcement
     family: 4,
     lookup: lookupIPv4,
-    // Add debug and logger for Nodemailer internals
     debug: true,
     logger: true 
   };
