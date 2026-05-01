@@ -1,14 +1,26 @@
 import nodemailer from 'nodemailer';
 import dns from 'node:dns';
 
-// Custom lookup function to force IPv4
+// Custom lookup function to force IPv4 and log the result
 const lookupIPv4 = (hostname: string, options: any, callback: any) => {
-  return dns.lookup(hostname, { family: 4 }, callback);
+  console.log(`DNS Lookup for: ${hostname}`);
+  return dns.lookup(hostname, { family: 4 }, (err, address, family) => {
+    if (err) {
+      console.error(`DNS Lookup Failed for ${hostname}:`, err);
+    } else {
+      console.log(`DNS Lookup Success: ${hostname} -> ${address} (IPv${family})`);
+    }
+    callback(err, address, family);
+  });
 };
 
 const createTransporter = () => {
   const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS ? '********' : 'MISSING';
   
+  console.log(`Initializing Mailer: Host=${host}, User=${user}, Pass=${pass}`);
+
   const config: any = {
     host: host,
     port: parseInt(process.env.EMAIL_PORT || '465'),
@@ -17,55 +29,53 @@ const createTransporter = () => {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-    // Standard family: 4 option
     family: 4,
-    // Custom lookup ensures Node.js doesn't even try IPv6
-    lookup: lookupIPv4
+    lookup: lookupIPv4,
+    // Add debug and logger for Nodemailer internals
+    debug: true,
+    logger: true 
   };
 
   return nodemailer.createTransport(config);
 };
 
-const transporter = createTransporter();
+let transporter = createTransporter();
 
 export const sendVerificationEmail = async (email: string, code: string) => {
+  console.log(`Attempting to send verification code to: ${email}`);
+  
   const mailOptions = {
     from: `"Momentris" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
     to: email,
     subject: 'Verify Your Momentris Account',
     html: `
-      <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 16px; background-color: #ffffff;">
-        <div style="text-align: center; margin-bottom: 40px;">
-          <h1 style="color: #000000; font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -1px;">Momentris</h1>
-        </div>
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px; border: 1px solid #f0f0f0; border-radius: 16px;">
+        <h1 style="text-align: center;">Momentris</h1>
         <div style="background-color: #f9f9f9; padding: 32px; border-radius: 12px; text-align: center;">
-          <h2 style="color: #1a1a1a; font-size: 24px; font-weight: 700; margin-bottom: 16px;">Verify your email</h2>
-          <p style="color: #666666; font-size: 16px; line-height: 24px; margin-bottom: 32px;">
-            Thank you for joining Momentris. To complete your registration, please enter the following verification code:
-          </p>
-          <div style="background-color: #ffffff; padding: 24px; border: 2px solid #e5e5e5; border-radius: 12px; display: inline-block;">
-            <span style="font-family: 'Courier New', Courier, monospace; font-size: 40px; font-weight: 800; color: #000000; letter-spacing: 8px;">${code}</span>
-          </div>
-          <p style="color: #999999; font-size: 14px; margin-top: 32px;">
-            This code will expire in 10 minutes. If you didn't request this email, you can safely ignore it.
-          </p>
-        </div>
-        <div style="text-align: center; margin-top: 40px;">
-          <p style="color: #999999; font-size: 12px; margin: 0;">
-            &copy; 2026 Momentris. All rights reserved.
-          </p>
+          <h2>Your Verification Code</h2>
+          <div style="font-size: 40px; font-weight: 800; letter-spacing: 8px; margin: 20px 0;">${code}</div>
+          <p>This code expires in 10 minutes.</p>
         </div>
       </div>
     `,
   };
 
   try {
-    // Verify connection before sending
+    console.log('Verifying SMTP connection...');
     await transporter.verify();
-    await transporter.sendMail(mailOptions);
-    console.log(`Verification email sent to ${email}`);
-  } catch (error) {
-    console.error('Error sending verification email:', error);
-    throw new Error('Failed to send verification email');
+    console.log('SMTP Connection Verified. Sending Mail...');
+    
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully:', info.messageId);
+    return info;
+  } catch (error: any) {
+    console.error('DETAILED EMAIL ERROR:', {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response,
+      stack: error.stack
+    });
+    throw new Error(`Failed to send email: ${error.message}`);
   }
 };
