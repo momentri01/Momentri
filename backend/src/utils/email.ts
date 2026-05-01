@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import type SMTPTransport from 'nodemailer/lib/smtp-transport';
 import dns from 'node:dns';
 
 // Custom lookup function to force IPv4
@@ -13,7 +14,7 @@ const createTransporter = () => {
   const user = process.env.EMAIL_USER;
   const pass = process.env.EMAIL_PASS ? process.env.EMAIL_PASS.replace(/\s/g, '') : '';
   
-  return nodemailer.createTransport({
+  const options: SMTPTransport.Options = {
     host,
     port: 587,
     secure: false,
@@ -21,7 +22,8 @@ const createTransporter = () => {
     family: 4,
     lookup: lookupIPv4,
     connectionTimeout: 10000,
-  });
+  };
+  return nodemailer.createTransport(options);
 };
 
 export const sendVerificationEmail = async (email: string, code: string) => {
