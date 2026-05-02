@@ -24,6 +24,8 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setInfoNote(null);
+    
     try {
       const data = await api.post('/auth/login', formData);
       localStorage.setItem('token', data.token);
@@ -31,21 +33,22 @@ const Login: React.FC = () => {
       navigate('/dashboard');
       window.location.reload();
     } catch (error: any) {
-      console.error('Login error detail:', error);
-      console.log('Error response status:', error.response?.status);
-      console.log('Error response data:', error.response?.data);
+      console.error('Login error:', error);
+      
+      const status = error.response?.status;
+      const errorData = error.response?.data;
 
-      if (error.response?.status === 403) {
+      if (status === 403 || error.message?.includes('verified')) {
         setInfoNote('Your account is not verified yet. We have sent a new verification code to your email.');
         
-        // Auto-resend code in background (non-blocking)
-        const emailToResend = error.response?.data?.email || formData.email;
+        // Auto-resend code in background
+        const emailToResend = errorData?.email || formData.email;
         api.post('/auth/resend-code', { email: emailToResend })
           .catch(err => console.error('Background code resend failed:', err));
           
         setShowMFA(true);
       } else {
-        alert(error.response?.data?.message || 'Login failed. Please check your credentials.');
+        alert(errorData?.message || error.message || 'Login failed. Please check your credentials.');
       }
     } finally {
       setLoading(false);
