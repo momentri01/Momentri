@@ -28,7 +28,9 @@ export const sendVerificationEmail = async (email: string, code: string) => {
   // 1. Try sending via Resend API if key is provided (Highly Recommended for Railway)
   if (process.env.RESEND_API_KEY) {
     try {
-      console.log('Attempting to send email via Resend API...');
+      const fromField = process.env.EMAIL_FROM || 'Momentris <onboarding@resend.dev>';
+      console.log(`Attempting to send email via Resend API from: ${fromField}`);
+      
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -36,13 +38,14 @@ export const sendVerificationEmail = async (email: string, code: string) => {
           'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
         },
         body: JSON.stringify({
-          from: process.env.EMAIL_FROM || 'Momentris <onboarding@resend.dev>',
+          from: fromField,
           to: email,
           subject: 'Verify Your Momentris Account',
-          html: `<div style="font-family: sans-serif; padding: 40px; text-align: center;">
-                  <h1>Momentris</h1>
-                  <p>Your verification code is:</p>
-                  <div style="font-size: 40px; font-weight: bold; letter-spacing: 8px; margin: 20px 0;">${code}</div>
+          html: `<div style="font-family: sans-serif; padding: 40px; text-align: center; color: #111;">
+                  <h1 style="font-size: 24px; font-weight: bold;">Momentris</h1>
+                  <p style="font-size: 16px; color: #666;">Thank you for joining. Use the code below to verify your account:</p>
+                  <div style="font-size: 42px; font-weight: 900; letter-spacing: 10px; margin: 30px 0; color: #000; font-family: monospace;">${code}</div>
+                  <p style="font-size: 14px; color: #999;">This code will expire in 10 minutes.</p>
                 </div>`,
         }),
       });
