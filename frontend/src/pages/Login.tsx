@@ -37,18 +37,21 @@ const Login: React.FC = () => {
       
       const status = error.response?.status;
       const errorData = error.response?.data;
+      const errorMessage = errorData?.message || error.message || '';
 
-      if (status === 403 || error.message?.includes('verified')) {
+      if (status === 403 || errorMessage.toLowerCase().includes('verified')) {
         setInfoNote('Your account is not verified yet. We have sent a new verification code to your email.');
         
         // Auto-resend code in background
         const emailToResend = errorData?.email || formData.email;
-        api.post('/auth/resend-code', { email: emailToResend })
-          .catch(err => console.error('Background code resend failed:', err));
+        if (emailToResend) {
+          api.post('/auth/resend-code', { email: emailToResend })
+            .catch(err => console.error('Background code resend failed:', err));
+        }
           
         setShowMFA(true);
       } else {
-        alert(errorData?.message || error.message || 'Login failed. Please check your credentials.');
+        alert(errorMessage || 'Login failed. Please check your credentials.');
       }
     } finally {
       setLoading(false);
