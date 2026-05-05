@@ -126,7 +126,7 @@ const LandingPage: React.FC = () => {
                    </div>
                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-primary rounded-full transition-all duration-500" 
+                        className="h-full bg-green-500 rounded-full transition-all duration-500" 
                         style={{ width: `${(currentCampaign.raised / currentCampaign.goal) * 100}%` }}
                       />
                    </div>
@@ -238,7 +238,7 @@ const LandingPage: React.FC = () => {
                       </div>
                       <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-primary rounded-full transition-all duration-1000" 
+                          className="h-full bg-green-500 rounded-full transition-all duration-1000" 
                           style={{ width: `${Math.min((event.totalRaised / event.donationGoal) * 100, 100)}%` }}
                         />
                       </div>
