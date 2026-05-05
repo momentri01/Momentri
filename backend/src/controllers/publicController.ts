@@ -49,7 +49,7 @@ export const getTopEvents = async (req: Request, res: Response) => {
         visibility: 'PUBLIC',
         status: 'ACTIVE',
       },
-      take: 6,
+      take: 3,
       orderBy: {
         createdAt: 'desc',
       },
