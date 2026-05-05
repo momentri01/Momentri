@@ -41,3 +41,47 @@ export const getPlatformStats = async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error fetching platform stats', error });
   }
 };
+
+export const getTopEvents = async (req: Request, res: Response) => {
+  try {
+    const events = await prisma.event.findMany({
+      where: {
+        visibility: 'PUBLIC',
+        status: 'ACTIVE',
+      },
+      take: 6,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        owner: {
+          select: { fullName: true }
+        },
+        donations: {
+          where: { paymentStatus: 'SUCCESSFUL' },
+          select: { grossAmount: true }
+        }
+      }
+    });
+
+    const eventsWithTotals = events.map(event => {
+      const totalRaised = event.donations.reduce((sum, d) => sum + d.grossAmount, 0);
+      return {
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        slug: event.slug,
+        coverImageUrl: event.coverImageUrl,
+        donationGoal: event.donationGoal,
+        currency: event.currency,
+        totalRaised,
+        ownerName: event.owner.fullName,
+        createdAt: event.createdAt
+      };
+    });
+
+    res.json(eventsWithTotals);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching top events', error });
+  }
+};

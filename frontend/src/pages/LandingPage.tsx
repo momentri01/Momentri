@@ -10,6 +10,7 @@ const LandingPage: React.FC = () => {
     activeEvents: 0
   });
 
+  const [topEvents, setTopEvents] = useState<any[]>([]);
   const [campaignIndex, setCampaignIndex] = useState(0);
   const [activePhrase, setActivePhrase] = useState(0);
   const mockCampaigns = [
@@ -28,15 +29,19 @@ const LandingPage: React.FC = () => {
   const phrases = ["what matters.", "your dreams.", "your community.", "every milestone.", "urgent causes."];
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const data = await api.get('/public/stats');
-        setStats(data);
+        const [statsData, topEventsData] = await Promise.all([
+          api.get('/public/stats'),
+          api.get('/public/top-events')
+        ]);
+        setStats(statsData);
+        setTopEvents(topEventsData);
       } catch (error) {
-        console.error('Failed to fetch platform stats');
+        console.error('Failed to fetch platform data');
       }
     };
-    fetchStats();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -186,6 +191,77 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Top Events Section */}
+      {topEvents.length > 0 && (
+        <section className="py-24 bg-gray-50/50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-end mb-12">
+              <div>
+                <h2 className="text-4xl font-black text-gray-900 mb-4">Trending Campaigns</h2>
+                <p className="text-lg text-muted-foreground font-medium">Support these amazing organizers reaching their goals.</p>
+              </div>
+              <Link to="/home" className="hidden sm:flex items-center gap-2 font-bold text-primary hover:gap-3 transition-all">
+                View all events <ArrowRight size={20} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {topEvents.map((event) => (
+                <Link 
+                  key={event.id} 
+                  to={`/public-event/${event.slug || event.id}`}
+                  className="group bg-white rounded-[2rem] overflow-hidden border transition-all hover:shadow-2xl hover:-translate-y-2"
+                >
+                  <div className="relative h-64 overflow-hidden">
+                    <img 
+                      src={event.coverImageUrl || "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800"} 
+                      alt={event.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-primary">
+                      {event.currency}
+                    </div>
+                  </div>
+                  <div className="p-8">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-1">{event.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-6 line-clamp-2">{event.description}</p>
+                    
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-end">
+                        <p className="text-sm font-bold text-gray-900">
+                          ${event.totalRaised.toLocaleString()} <span className="text-muted-foreground font-medium text-xs">raised</span>
+                        </p>
+                        <p className="text-xs font-bold text-primary">
+                          {Math.round((event.totalRaised / event.donationGoal) * 100)}%
+                        </p>
+                      </div>
+                      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary rounded-full transition-all duration-1000" 
+                          style={{ width: `${Math.min((event.totalRaised / event.donationGoal) * 100, 100)}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 pt-2 border-t">
+                        <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
+                          {event.ownerName?.[0]}
+                        </div>
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">By {event.ownerName}</p>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="mt-12 text-center sm:hidden">
+              <Link to="/home" className="inline-flex items-center gap-2 font-bold text-primary">
+                View all events <ArrowRight size={20} />
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Feature Section with Images */}
       <section className="py-24 overflow-hidden">
