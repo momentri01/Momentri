@@ -13,6 +13,7 @@ interface Event {
   totalDonationsNet: number;
   slug: string;
   country: string;
+  province?: string;
   currency: string;
   coverImageUrl: string;
   owner: { fullName: string };
@@ -174,7 +175,7 @@ const Home: React.FC = () => {
                           </div>
                           <div className="flex items-center gap-1 text-[10px] font-black text-primary uppercase tracking-widest">
                             <MapPin size={12} />
-                            {event.country}
+                            {event.province ? `${event.province}, ` : ''}{event.country}
                           </div>
                         </div>
                       </div>

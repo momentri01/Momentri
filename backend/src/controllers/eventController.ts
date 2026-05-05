@@ -128,7 +128,13 @@ export const getPublicEvents = async (req: AuthRequest, res: Response) => {
         }
       }
     });
-    res.json(events);
+
+    const mappedEvents = events.map(event => ({
+      ...event,
+      province: event.province
+    }));
+
+    res.json(mappedEvents);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching public events', error });
   }
@@ -211,6 +217,7 @@ export const getEventBySlugOrId = async (req: Request, res: Response) => {
 
     const eventDetails = {
       ...event,
+      province: event.province,
       totalDonationsGross,
       totalDonationsNet,
       successfulDonationsCount,
