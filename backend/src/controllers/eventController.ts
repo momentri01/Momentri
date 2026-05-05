@@ -20,6 +20,7 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
     currency,
     visibility,
     country,
+    province,
     coverImageUrl,
     wishlistItems // Array of { catalogItemId, quantityRequested }
   } = req.body;
@@ -52,6 +53,7 @@ export const createEvent = async (req: AuthRequest, res: Response) => {
               currency: currency || 'USD',
               visibility: visibility || Visibility.PUBLIC,
               country,
+              province,
               coverImageUrl,
               slug,
               ownerId: userId,

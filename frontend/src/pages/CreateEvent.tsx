@@ -259,6 +259,32 @@ const CreateEvent: React.FC = () => {
                   <option>Other</option>
                 </select>
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-bold mb-2">Country</label>
+                  <select
+                    name="country"
+                    className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary font-medium"
+                    value={formData.country}
+                    onChange={handleChange}
+                  >
+                    <option value="United States">United States</option>
+                    <option value="Canada">Canada</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold mb-2">Province/State</label>
+                  <input
+                    type="text"
+                    name="province"
+                    required
+                    className="w-full rounded-xl border-border bg-muted/20 px-4 py-3 focus:ring-primary font-medium"
+                    placeholder="e.g. Ontario or New York"
+                    value={formData.province}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-bold mb-2 text-gray-900">Event Cover Image</label>
                 <input 

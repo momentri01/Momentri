@@ -74,6 +74,7 @@ export const getTopEvents = async (req: Request, res: Response) => {
         coverImageUrl: event.coverImageUrl,
         donationGoal: event.donationGoal,
         currency: event.currency,
+        province: event.province,
         totalRaised,
         ownerName: event.owner.fullName,
         createdAt: event.createdAt

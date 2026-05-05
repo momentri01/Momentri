@@ -58,6 +58,7 @@ model Event {
   isVerified           Boolean            @default(false)
   visibility           String             @default("PUBLIC")
   country              String
+  province             String?
   slug                 String             @unique
   donations            Donation[]
   wishlistItems        WishlistItem[]

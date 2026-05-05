@@ -246,7 +246,11 @@ const LandingPage: React.FC = () => {
                         <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-[10px] font-bold">
                           {event.ownerName?.[0]}
                         </div>
-                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">By {event.ownerName}</p>
+                        <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider flex-1">By {event.ownerName}</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
+                          <MapPin size={10} />
+                          {event.province ? `${event.province}, ` : ''}{event.country}
+                        </p>
                       </div>
                     </div>
                   </div>
